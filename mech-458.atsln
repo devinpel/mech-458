@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "mech-458", "mech-458\mech-458.cproj", "{44F56F93-B4FF-4E1A-8BEE-626399DF6D54}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{44F56F93-B4FF-4E1A-8BEE-626399DF6D54}.Debug|AVR.ActiveCfg = Debug|AVR
+		{44F56F93-B4FF-4E1A-8BEE-626399DF6D54}.Debug|AVR.Build.0 = Debug|AVR
+		{44F56F93-B4FF-4E1A-8BEE-626399DF6D54}.Release|AVR.ActiveCfg = Release|AVR
+		{44F56F93-B4FF-4E1A-8BEE-626399DF6D54}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
