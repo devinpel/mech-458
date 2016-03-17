@@ -10,13 +10,13 @@ void adcinit (void)
 {	
 	ADCSRA |= ADCEnable;		//Enable ADC module 
 	ADCSRA |= ADCIntEn;			//Enable ADC Interrupt
-	ADMUX  |= ADCLeftAdjust;	//Make ADC result left adjust
+	//ADMUX  |= ADCLeftAdjust;	//Make ADC result left adjust
 	ADMUX  |= ADCExRef;			//Turn on external ref for ADC	
 }
 
 ISR(ADC_vect)
 {
-	ADC_result = ADCH;
+	ADC_result = ADCL | (ADCH << 8);
 	ADC_result_flag = 1;
 	PORTC = ADCH;
 }
