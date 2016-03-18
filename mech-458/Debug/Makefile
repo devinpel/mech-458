@@ -51,6 +51,7 @@ SUBDIRS :=  \
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../src/adc.c \
+../src/data.c \
 ../src/interrupt.c \
 ../src/pwm.c \
 ../src/stepper.c \
@@ -68,6 +69,7 @@ ASM_SRCS +=
 
 OBJS +=  \
 src/adc.o \
+src/data.o \
 src/interrupt.o \
 src/pwm.o \
 src/stepper.o \
@@ -78,6 +80,7 @@ src/main.o
 
 OBJS_AS_ARGS +=  \
 src/adc.o \
+src/data.o \
 src/interrupt.o \
 src/pwm.o \
 src/stepper.o \
@@ -88,6 +91,7 @@ src/main.o
 
 C_DEPS +=  \
 src/adc.d \
+src/data.d \
 src/interrupt.d \
 src/pwm.d \
 src/stepper.d \
@@ -98,6 +102,7 @@ src/main.d
 
 C_DEPS_AS_ARGS +=  \
 src/adc.d \
+src/data.d \
 src/interrupt.d \
 src/pwm.d \
 src/stepper.d \
@@ -120,6 +125,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

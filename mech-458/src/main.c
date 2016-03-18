@@ -33,6 +33,7 @@
 #include <string.h>
 #include "tim3.h"
 #include "stepper.h"
+#include "data.h"
 
 volatile unsigned char ADC_result;
 volatile unsigned char ADC_result_flag;
@@ -60,7 +61,7 @@ int main (void)
 
 	board_init();
 	
-	char ones, tens, hundereds;
+	uint16_t storeADC = 1023;
 	
 	cli();
 	adcinit();
@@ -106,15 +107,10 @@ int main (void)
 			{
 				if(ADC_result_flag == 1)
 				{
-					ones = (ADC_result % 10);
-					tens = ((ADC_result / 10) % 10);
-					hundereds = ((ADC_result / 100) % 10);	
-					
-					usartTX(hundereds + 0x30);
-					usartTX(tens + 0x30);
-					usartTX(ones + 0x30);
-					usartTX('\n');
-					usartTX('\r');
+					if (ADC_result < storeADC)
+					{
+						storeADC = ADC_result;
+					}
 					ADC_result_flag = 0;
 					ADCSRA |= ADCStart;
 				}

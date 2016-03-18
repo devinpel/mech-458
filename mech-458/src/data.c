@@ -50,9 +50,7 @@ void display_data (struct data *input)
 		tens = ((temp / 10) % 10);
 		hundereds = ((temp / 100) % 10);
 		thousands = ((temp / 1000) % 10);
-		tenthou = ((temp / 10000) % 10);
-		
-		usartTX(tenthou + 0x30);
+
 		usartTX(thousands + 0x30);
 		usartTX(hundereds + 0x30);
 		usartTX(tens + 0x30);
