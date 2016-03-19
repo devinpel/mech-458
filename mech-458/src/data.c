@@ -15,8 +15,8 @@
 
 void insert_data (struct data *input, uint8_t val)
 {
-	input->queue[input->head] = val;
-	input->head = (input->head + 1) % 16;
+	input->queue[input->head % 16] = val;
+	input->head = input->head + 1;
 }
 
 uint8_t pop_data (struct data *input)
@@ -28,15 +28,17 @@ uint8_t pop_data (struct data *input)
 		usartTXs("ERROR tail has over run head");
 	}
 	
-	temp = input->queue[input->tail];
-	input->tail = (input->tail + 1) % 16;
-	
+	temp = input->queue[input->tail % 16];
+	input->tail = input->tail + 1;
+	usartTXs("tail = ");
+	usartTX(input->tail + 0x30);
+	usartTXs("\n\r");
 	return temp;
 }
 
 void display_data (struct data *input)
 {
-	uint8_t i,ones, tens, hundereds, thousands, tenthou;
+	uint8_t i,ones, tens, hundereds, thousands;
 	uint16_t temp;
 	
 	usartTX('\n');

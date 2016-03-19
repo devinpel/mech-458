@@ -16,7 +16,7 @@ void interruptInit (void)
 	EICRB |= _BV(ISC51) | _BV(ISC50);	//Set ext int5 to rising edge, Ramp down button
 	EICRB |= _BV(ISC61);				//Set ext int4 to falling edge, Home position
 	
-	EIMSK |= 0b01111111;				//Enable ext int1-int6
+	EIMSK |= 0b01110111;				//Enable ext int1-int6
 }
 
 //End of belt sensor

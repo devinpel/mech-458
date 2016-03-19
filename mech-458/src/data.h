@@ -24,5 +24,6 @@ struct data
 void insert_data (struct data *input, uint8_t val);
 void display_data (struct data *input);
 void clearQueue (struct data *input);
+uint8_t pop_data (struct data *input);
 
 #endif /* DATA_H_ */

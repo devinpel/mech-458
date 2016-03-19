@@ -18,7 +18,7 @@
 #define ADCLeftAdjust	0b00100000
 #define ADCStart		0b01000000
 
-extern volatile unsigned char ADC_result;
+extern volatile uint16_t ADC_result;
 extern volatile unsigned char ADC_result_flag;		
 
 void adcinit (void);
