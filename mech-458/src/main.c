@@ -124,9 +124,9 @@ int main (void)
 		
 		if (ReflectiveFlag == 1)
 		{	
-			ReflectiveFlag = 0;
-			while (ReflectiveFlag == 0)
-			{
+// 			ReflectiveFlag = 0;
+// 			while (ReflectiveFlag == 0)
+// 			{
 				if(ADC_result_flag == 1)
 				{
 					if (ADC_result < storeADC)
@@ -137,7 +137,7 @@ int main (void)
 					ADCSRA |= ADCStart;
 								
 				}
-			}		
+//			}		
 // 			ones = (storeADC % 10);
 // 			tens = ((storeADC / 10) % 10);
 // 			hundereds = ((storeADC / 100) % 10);

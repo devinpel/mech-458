@@ -17,6 +17,6 @@ void adcinit (void)
 ISR(ADC_vect)
 {
 	ADC_result = ADCL | (ADCH << 8);
-	ADC_result_flag = 1;
+	ADC_result_flag ^= 1;
 	PORTC = ADC_result;
 }
