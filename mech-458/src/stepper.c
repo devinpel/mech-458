@@ -7,6 +7,7 @@
 void stepperinit(void)
 {
 	DDRA = 0b00111111;	//porta pin 7 (for stepper button) and 6 (for PWM button) to input remaining to output
+	PORTD = 0b11110000;
 }
 /*
 void movestepper(void)
