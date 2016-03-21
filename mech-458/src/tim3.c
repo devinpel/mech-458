@@ -13,7 +13,7 @@ void timer3init (void)
 ISR(TIMER3_COMPA_vect)
 {
 	tim3tickflag++;
-	
+/*	
 	if(nextpart == lastpart && tim3tickflag == 5)
 	{
 		delaytim3 = 36;
@@ -154,7 +154,7 @@ ISR(TIMER3_COMPA_vect)
 			break;
 		}
 	}
-	
+*/	
 	
 	
 	/*	
@@ -221,41 +221,7 @@ ISR(TIMER3_COMPA_vect)
 			break;				
 		}
 	}*/
+
 	
-	if(tim3tickflag == 36 && steppermove == 0)	// Home
-	{
-		switch (curstep)
-		{
-			
-			case 0:
-			PORTA = 0b00000011;		//step 1
-			curstep = 1;
-			tim3tickflag = 0;
-			//homestep ++;
-			break;
-			
-			case 1:
-			PORTA = 0b00011000;		//step 2
-			curstep = 2;
-			tim3tickflag = 0;
-			//homestep ++;
-			break;
-			
-			case 2:
-			PORTA = 0b00000101;		//step 3
-			curstep = 3;
-			tim3tickflag = 0;
-			//homestep ++;
-			break;
-			
-			case 3:
-			PORTA = 0b00101000;		//step 4
-			curstep = 0;
-			tim3tickflag = 0;
-			//homestep ++;
-			break;
-			
-		}
-	}
 }
 

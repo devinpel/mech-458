@@ -47,10 +47,7 @@ volatile unsigned char HomeFlag;
 
 volatile unsigned char tim3tickflag;
 volatile unsigned char curstep;
-volatile unsigned char steppermove;
-volatile unsigned char steps;
-volatile unsigned char lastpart;
-volatile unsigned char nextpart;
+volatile unsigned char step;
 volatile unsigned char delaytim3;
 
 
@@ -65,6 +62,9 @@ int main (void)
 //	char i = 0;
 	struct data *input, in;
 //	uint8_t ones, tens, hundereds, thousands;
+	
+	volatile uint8_t lastpart;
+	volatile uint8_t nextpart;
 		
 	input = &in;
 	
@@ -80,10 +80,11 @@ int main (void)
 	ReflectiveFlag = 0;
 	EndofBeltFlag = 0;
 	ADC_result_flag = 0;
+	
 	tim3tickflag = 0;
 	curstep = 0;
-	steppermove = 0;
-	steps = 0;
+	
+	step = 0;
 	lastpart = 0;
 	nextpart = 2;
 	delaytim3 = 36;
@@ -108,9 +109,19 @@ int main (void)
 	pwmcw();
 	
 	EndofBeltFlag = 0;
-			
+	homestepper();		
 	while(1)
 	{
+		if (tim3tickflag == delaytim3)
+		{
+			//setup next and last part
+			lastpart = movestepper(nextpart, lastpart);
+			if (nextpart == lastpart)
+			{
+				nextpart++;
+			}
+		}
+		
 		if (ReflectiveFlag == 1)
 		{	
 			ReflectiveFlag = 0;

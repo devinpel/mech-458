@@ -12,12 +12,14 @@
 #include <asf.h>
 
 void stepperinit(void);
-void stepthestepper(U8 step);
-void stepthestepperneg(U8 step);
-void findstep(void);
-void movestepper(void);
+void casefunc(uint8_t nextstep);
+uint8_t movestepper(uint8_t nextpart, uint8_t lastpart);
+void homestepper(void);
 
-extern volatile unsigned char lastpart;
-extern volatile unsigned char nextpart;
+extern volatile unsigned char step;
+extern volatile unsigned char HomeFlag;
+extern volatile unsigned char delaytim3;
+
+
 
 #endif /* STEPPER_H_ */

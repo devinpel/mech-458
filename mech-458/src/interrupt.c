@@ -52,7 +52,7 @@ ISR(INT5_vect)
 //Stepper home
 ISR(INT6_vect)
 {
-	steppermove ++;
+	
 	HomeFlag = 1;
 }
 
