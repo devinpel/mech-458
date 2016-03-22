@@ -11,6 +11,7 @@
 
 #include <asf.h>
 #include "tim3.h"
+#include "pwm.h"
 
 void interruptInit (void);
 

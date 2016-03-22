@@ -61,7 +61,7 @@ int main (void)
 	uint16_t storeADC = 1023;
 //	char i = 0;
 	struct data *input, in;
-//	uint8_t ones, tens, hundereds, thousands;
+	uint8_t ones, tens, hundereds, thousands;
 	
 	volatile uint8_t lastpart;
 	volatile uint8_t nextpart;
@@ -85,8 +85,8 @@ int main (void)
 	curstep = 0;
 	
 	step = 0;
-	lastpart = 0;
-	nextpart = 2;
+	lastpart = 1;
+	nextpart = 1;
 	delaytim3 = 36;
 	
 	sei();
@@ -105,26 +105,41 @@ int main (void)
 	usartTXs("Serial port initialized\n\r");
 	usartTXs("Entering calibration mode\n\r");
 	usartTXs("-------------------------\n\r");	
-	
+	homestepper();
 	pwmcw();
 	
 	EndofBeltFlag = 0;
-	homestepper();		
+			
 	while(1)
 	{
 		if (tim3tickflag == delaytim3)
 		{
 			//setup next and last part
 			lastpart = movestepper(nextpart, lastpart);
-			if (nextpart == lastpart)
+			
+			if ((nextpart == lastpart)  && (EndofBeltFlag == 1))
 			{
-				nextpart++;
+				nextpart = pop_data(input);
+				usartTX(nextpart+0x30);
+				
+				EndofBeltFlag = 0;
+				pwmcw();
 			}
+// 			if (nextpart == lastpart)
+// 			{
+// 				nextpart++;
+// 				nextpart++;
+// 				nextpart++;
+// 				if (nextpart > 3)
+// 				{
+// 					nextpart = 0;
+// 				}
+// 			}
 		}
 		
 		if (ReflectiveFlag == 1)
 		{	
-// 			ReflectiveFlag = 0;
+//			ReflectiveFlag = 0;
 // 			while (ReflectiveFlag == 0)
 // 			{
 				if(ADC_result_flag == 1)
@@ -137,7 +152,43 @@ int main (void)
 					ADCSRA |= ADCStart;
 								
 				}
-//			}		
+		}		
+	
+//  			ReflectiveFlag = 0;
+// //			i++;
+		//Black
+		//if (storeADC > 860 && storeADC < 900)
+		if (storeADC >= 860 && storeADC <= 1000 && ReflectiveFlag == 0)
+		{
+			insert_data(input, 1);
+			storeADC = 1023;
+			PORTD = 0b00010000;
+		}
+		//White
+		else if (storeADC >= 700 && storeADC <= 859 && ReflectiveFlag == 0)
+		{
+			insert_data(input, 3);
+			storeADC = 1023;
+			PORTD = 0b00100000;
+		}
+		//Aluminum
+		else if (storeADC <= 200 && ReflectiveFlag == 0)
+		{
+			insert_data(input, 0);
+			storeADC = 1023;
+			PORTD = 0b01000000;
+		}
+		//Steal
+		else if (storeADC >= 199 && storeADC <= 699 && ReflectiveFlag == 0)
+		{
+			insert_data(input, 2);
+			storeADC = 1023;
+			PORTD = 0b10000000;
+		}
+// 		else
+// 		{
+// 			usartTXs("Undetermined part\n\r");
+// 				
 // 			ones = (storeADC % 10);
 // 			tens = ((storeADC / 10) % 10);
 // 			hundereds = ((storeADC / 100) % 10);
@@ -148,34 +199,12 @@ int main (void)
 // 			usartTX(tens + 0x30);
 // 			usartTX(ones + 0x30);
 // 			usartTX('\n');
-// 			usartTX('\r');	
- 			ReflectiveFlag = 0;
-//			i++;
-			//Black
-			//if (storeADC > 860 && storeADC < 900)
-			if (storeADC > 860)
-			{
-				insert_data(input, 1);
-			}
-			//White
-			else if (storeADC > 800 && storeADC < 850)
-			{
-				insert_data(input, 3);
-			}
-			//Aluminum
-			else if (storeADC < 150)
-			{
-				insert_data(input, 0);
-			}
-			//Steal
-			else if (storeADC > 150 && storeADC < 300)
-			{
-				insert_data(input, 2);
-			}
-			//increment the count to keep track of how many pieces have passed
-			input->size ++;
-			storeADC = 1023;
- 		}//end if
+// 			usartTX('\r');
+// 		}
+		//increment the count to keep track of how many pieces have passed
+		input->size ++;
+		
+// 		}//end if
 // 		if(EndofBeltFlag == 1)
 // 		{
 // 			pwmbrake();

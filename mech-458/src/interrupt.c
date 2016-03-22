@@ -16,13 +16,14 @@ void interruptInit (void)
 	EICRB |= _BV(ISC51) | _BV(ISC50);	//Set ext int5 to rising edge, Ramp down button
 	EICRB |= _BV(ISC61);				//Set ext int4 to falling edge, Home position
 	
-	EIMSK |= 0b01110111;				//Enable ext int1-int6
+	EIMSK |= 0b01000111;				//Enable ext int1-int6
 }
 
 //End of belt sensor
 ISR(INT0_vect)
 {
 	EndofBeltFlag = 1;
+	pwmbrake();
 }
 
 //Start of belt sensor
@@ -34,7 +35,7 @@ ISR(INT1_vect)
 //Reflective sensor activation
 ISR(INT2_vect)
 {
-	ReflectiveFlag = 1;
+	ReflectiveFlag ^= 1;
 }
 
 //Pause Button

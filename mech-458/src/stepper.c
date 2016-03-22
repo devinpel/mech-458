@@ -19,12 +19,13 @@ void homestepper(void)
 		{
 			nextstep = 0;
 		}
-		if (tim3tickflag == 36)
+		if (tim3tickflag == delaytim3)
 		{
 			casefunc(nextstep);
 		}
 	} 
 	HomeFlag = 0;
+	EIMSK &= ~(_BV(INT6));
 }
 
 uint8_t movestepper(uint8_t nextpart, uint8_t lastpart)
@@ -32,11 +33,33 @@ uint8_t movestepper(uint8_t nextpart, uint8_t lastpart)
 	char move = 0;
 	char nextstep = 0;
 	
+	usartTX(nextpart+0x30);
+	usartTX("\t");
+	usartTX(lastpart+0x30);
+	usartTXs("\n\r");
+	
 	move = lastpart - nextpart;
 	if (move == 2 || move == -2)
 	{
+		if (step < 50)
+		{
+			delaytim3 = delaytim3 - (delaytim3 / 10);
+			if (delaytim3 < 12)
+			{
+				delaytim3 = 12;
+			}
+		}
+		if (step > 25)
+		{
+			delaytim3 = delaytim3 + (delaytim3 / 10);
+			if (delaytim3 > 36)
+			{
+				delaytim3 = 36;
+			}
+		}
+		
 		nextstep = curstep - 1;
-		PORTD = 0b11110000;
+		
 		if (nextstep == -1)
 		{
 			nextstep = 3;
@@ -53,8 +76,24 @@ uint8_t movestepper(uint8_t nextpart, uint8_t lastpart)
 		}
 	}
 	
-	if (move == 3 || move == -1)
+	else if (move == 3 || move == -1)
 	{
+		if (step < 25)
+		{
+			delaytim3 = delaytim3 - (delaytim3 / 10);
+			if (delaytim3 < 12)
+			{
+				delaytim3 = 12;
+			}
+		}
+		if (step > 25)
+		{
+			delaytim3 = delaytim3 + (delaytim3 / 10);
+			if (delaytim3 > 36)
+			{
+				delaytim3 = 36;
+			}
+		}
 		nextstep = curstep - 1;
 		if (nextstep == -1)
 		{
@@ -72,8 +111,24 @@ uint8_t movestepper(uint8_t nextpart, uint8_t lastpart)
 		}
 	}
 		
-	if (move == 1 || move == -3)
+	else if (move == 1 || move == -3)
 	{
+		if (step < 25)
+		{
+			delaytim3 = delaytim3 - (delaytim3 / 10);
+			if (delaytim3 < 12)
+			{
+				delaytim3 = 12;
+			}
+		}
+		if (step > 25)
+		{
+			delaytim3 = delaytim3 + (delaytim3 / 10);
+			if (delaytim3 > 36)
+			{
+				delaytim3 = 36;
+			}
+		}
 		nextstep = curstep + 1;
 		if (nextstep == 4)
 		{

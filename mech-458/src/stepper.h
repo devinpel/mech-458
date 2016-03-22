@@ -10,6 +10,7 @@
 #define STEPPER_H_
 
 #include <asf.h>
+#include "usart.h"
 
 void stepperinit(void);
 void casefunc(uint8_t nextstep);
@@ -19,6 +20,8 @@ void homestepper(void);
 extern volatile unsigned char step;
 extern volatile unsigned char HomeFlag;
 extern volatile unsigned char delaytim3;
+
+extern volatile unsigned char EndofBeltFlag;
 
 
 
