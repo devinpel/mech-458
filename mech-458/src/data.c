@@ -16,8 +16,8 @@
 void insert_data (struct data *input, uint8_t val)
 {
 	input->queue[input->head % 16] = val;
-	usartTX(val+0x30);
-	usartTXs("\n\r");
+// 	usartTX(val+0x30);
+// 	usartTXs("\n\r");
 	input->head = input->head + 1;
 }
 
@@ -29,12 +29,12 @@ uint8_t pop_data (struct data *input)
 	{
 		usartTXs("ERROR tail has over run head");
 	}
-	
+	input->datapulled = 1;
 	temp = input->queue[input->tail % 16];
 	input->tail = input->tail + 1;
-// 	usartTXs("tail = ");
-// 	usartTX(input->tail + 0x30);
-// 	usartTXs("\n\r");
+//	usartTXs("tail = ");
+//	usartTX(input->tail + 0x30);
+//	usartTXs("\n\r");
 	return temp;
 }
 
@@ -72,4 +72,21 @@ void clearQueue (struct data *input)
 	{
 		input->queue[i] = 0x00;
 	}
+}
+
+void displayVal (uint16_t storeADC)
+{
+	uint8_t ones, tens, hundereds, thousands;	
+
+	ones = (storeADC % 10);
+	tens = ((storeADC / 10) % 10);
+	hundereds = ((storeADC / 100) % 10);
+	thousands = ((storeADC / 1000) % 10);
+	usartTXs("Stored ADC\n\r");
+	usartTX(thousands + 0x30);
+	usartTX(hundereds + 0x30);
+	usartTX(tens + 0x30);
+	usartTX(ones + 0x30);
+	usartTX('\n');
+	usartTX('\r');
 }

@@ -28,15 +28,17 @@ void homestepper(void)
 	EIMSK &= ~(_BV(INT6));
 }
 
-uint8_t movestepper(uint8_t nextpart, uint8_t lastpart)
+uint8_t movestepper(char nextpart, char lastpart)
 {
 	char move = 0;
 	char nextstep = 0;
+	char delayconst = 26;
+	char accel = 11;
 	
-	usartTX(nextpart+0x30);
-	usartTXs("\t");
-	usartTX(lastpart+0x30);
-	usartTXs("\n\r");
+// 	usartTX(nextpart+0x30);
+// 	usartTXs("\t");
+// 	usartTX(lastpart+0x30);
+// 	usartTXs("\n\r");
 	
 	move = lastpart - nextpart;
 	if (move == 2 || move == -2)
@@ -44,17 +46,17 @@ uint8_t movestepper(uint8_t nextpart, uint8_t lastpart)
 		if (step < 50)
 		{
 			delaytim3 = delaytim3 - (delaytim3 / 10);
-			if (delaytim3 < 12)
+			if (delaytim3 < accel)
 			{
-				delaytim3 = 12;
+				delaytim3 = accel;
 			}
 		}
-		if (step > 25)
+		if (step > 75)
 		{
 			delaytim3 = delaytim3 + (delaytim3 / 10);
-			if (delaytim3 > 36)
+			if (delaytim3 > delayconst)
 			{
-				delaytim3 = 36;
+				delaytim3 = delayconst;
 			}
 		}
 		
@@ -81,17 +83,17 @@ uint8_t movestepper(uint8_t nextpart, uint8_t lastpart)
 		if (step < 25)
 		{
 			delaytim3 = delaytim3 - (delaytim3 / 10);
-			if (delaytim3 < 12)
+			if (delaytim3 < accel)
 			{
-				delaytim3 = 12;
+				delaytim3 = accel;
 			}
 		}
 		if (step > 25)
 		{
 			delaytim3 = delaytim3 + (delaytim3 / 10);
-			if (delaytim3 > 36)
+			if (delaytim3 > delayconst)
 			{
-				delaytim3 = 36;
+				delaytim3 = delayconst;
 			}
 		}
 		nextstep = curstep - 1;
@@ -116,17 +118,17 @@ uint8_t movestepper(uint8_t nextpart, uint8_t lastpart)
 		if (step < 25)
 		{
 			delaytim3 = delaytim3 - (delaytim3 / 10);
-			if (delaytim3 < 12)
+			if (delaytim3 < accel)
 			{
-				delaytim3 = 12;
+				delaytim3 = accel;
 			}
 		}
 		if (step > 25)
 		{
 			delaytim3 = delaytim3 + (delaytim3 / 10);
-			if (delaytim3 > 36)
+			if (delaytim3 > delayconst)
 			{
-				delaytim3 = 36;
+				delaytim3 = delayconst;
 			}
 		}
 		nextstep = curstep + 1;

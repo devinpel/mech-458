@@ -14,7 +14,7 @@
 
 void stepperinit(void);
 void casefunc(uint8_t nextstep);
-uint8_t movestepper(uint8_t nextpart, uint8_t lastpart);
+uint8_t movestepper(char nextpart, char lastpart);
 void homestepper(void);
 
 extern volatile unsigned char step;

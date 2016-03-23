@@ -61,10 +61,10 @@ int main (void)
 	uint16_t storeADC = 1023;
 //	char i = 0;
 	struct data *input, in;
-//	uint8_t ones, tens, hundereds, thousands;
+
 	
-	volatile uint8_t lastpart;
-	volatile uint8_t nextpart;
+	char lastpart;
+	char nextpart;
 		
 	input = &in;
 	
@@ -87,7 +87,7 @@ int main (void)
 	step = 0;
 	lastpart = 1;
 	nextpart = 1;
-	delaytim3 = 36;
+	delaytim3 = 28;
 	
 	sei();
 	
@@ -100,6 +100,7 @@ int main (void)
 	input->head = 0;
 	input->tail = 0;
 	input->size = 0;
+	input->datapulled = 0;
 	clearQueue(input);
 	
 	usartTXs("Serial port initialized\n\r");
@@ -112,20 +113,50 @@ int main (void)
 			
 	while(1)
 	{
+		
+		if ((input->datapulled == 0) && (input->head != input->tail))
+		{
+			nextpart = pop_data(input);
+			//usartTXs("here");
+		}
+		
+		else if (lastpart != nextpart)
+		{
+			if (tim3tickflag == delaytim3)
+			{
+				lastpart = movestepper(nextpart, lastpart);
+			}
+		}
+		else if (EndofBeltFlag == 1 && lastpart == nextpart)
+		{
+			input->datapulled = 0;
+			pwmcw();
+			EndofBeltFlag = 0;
+		}
+/*		
+		
 		if (tim3tickflag == delaytim3)
 		{	
-			if ((nextpart == lastpart) && (input->head > input->tail) && (EndofBeltFlag == 1))
+			if (lastpart != nextpart)
 			{
+				lastpart = movestepper(nextpart, lastpart);
+			}
+		
+			else if((lastpart == nextpart) && (input->head > input->tail))
+			{
+				if ((EndofBeltFlag == 1))
+				{
 				nextpart = pop_data(input);
 				usartTXs("oops");
 				
 				EndofBeltFlag = 0;
 				pwmcw();
+				}
 			}
 			//setup next and last part
-			lastpart = movestepper(nextpart, lastpart);			
+						
 		}
-		
+		*/
 		if (ReflectiveFlag == 1)
 		{	
 			if(ADC_result_flag == 1)
@@ -138,18 +169,21 @@ int main (void)
 				ADCSRA |= ADCStart;				
 			}
 		}		
+	
 		//Black
 		//if (storeADC > 860 && storeADC < 900)
-		if (storeADC >= 860 && storeADC <= 1000 && ReflectiveFlag == 0)
+		if (storeADC >= 915 && storeADC <= 1000 && ReflectiveFlag == 0)
 		{
 			insert_data(input, 1);
+			displayVal(storeADC);
 			storeADC = 1023;
 			PORTD = 0b00010000;
 		}
 		//White
-		else if (storeADC >= 700 && storeADC <= 859 && ReflectiveFlag == 0)
+		else if (storeADC >= 720 && storeADC <= 914 && ReflectiveFlag == 0)
 		{
 			insert_data(input, 3);
+			displayVal(storeADC);
 			storeADC = 1023;
 			PORTD = 0b00100000;
 		}
@@ -157,13 +191,15 @@ int main (void)
 		else if (storeADC <= 300 && ReflectiveFlag == 0)
 		{
 			insert_data(input, 0);
+			displayVal(storeADC);
 			storeADC = 1023;
 			PORTD = 0b01000000;
 		}
 		//Steal
-		else if (storeADC >= 301 && storeADC <= 699 && ReflectiveFlag == 0)
+		else if (storeADC >= 301 && storeADC <= 719 && ReflectiveFlag == 0)
 		{
 			insert_data(input, 2);
+			displayVal(storeADC);
 			storeADC = 1023;
 			PORTD = 0b10000000;
 		}
