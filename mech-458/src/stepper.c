@@ -34,7 +34,7 @@ uint8_t movestepper(uint8_t nextpart, uint8_t lastpart)
 	char nextstep = 0;
 	
 	usartTX(nextpart+0x30);
-	usartTX("\t");
+	usartTXs("\t");
 	usartTX(lastpart+0x30);
 	usartTXs("\n\r");
 	

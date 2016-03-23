@@ -17,6 +17,7 @@ void insert_data (struct data *input, uint8_t val)
 {
 	input->queue[input->head % 16] = val;
 	usartTX(val+0x30);
+	usartTXs("\n\r");
 	input->head = input->head + 1;
 }
 

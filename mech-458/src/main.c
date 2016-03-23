@@ -61,7 +61,7 @@ int main (void)
 	uint16_t storeADC = 1023;
 //	char i = 0;
 	struct data *input, in;
-	uint8_t ones, tens, hundereds, thousands;
+//	uint8_t ones, tens, hundereds, thousands;
 	
 	volatile uint8_t lastpart;
 	volatile uint8_t nextpart;
@@ -113,49 +113,31 @@ int main (void)
 	while(1)
 	{
 		if (tim3tickflag == delaytim3)
-		{
-			//setup next and last part
-			lastpart = movestepper(nextpart, lastpart);
-			
-			if ((nextpart == lastpart)  && (EndofBeltFlag == 1))
+		{	
+			if ((nextpart == lastpart) && (input->head > input->tail) && (EndofBeltFlag == 1))
 			{
 				nextpart = pop_data(input);
-				usartTX(nextpart+0x30);
+				usartTXs("oops");
 				
 				EndofBeltFlag = 0;
 				pwmcw();
 			}
-// 			if (nextpart == lastpart)
-// 			{
-// 				nextpart++;
-// 				nextpart++;
-// 				nextpart++;
-// 				if (nextpart > 3)
-// 				{
-// 					nextpart = 0;
-// 				}
-// 			}
+			//setup next and last part
+			lastpart = movestepper(nextpart, lastpart);			
 		}
 		
 		if (ReflectiveFlag == 1)
 		{	
-//			ReflectiveFlag = 0;
-// 			while (ReflectiveFlag == 0)
-// 			{
-				if(ADC_result_flag == 1)
+			if(ADC_result_flag == 1)
+			{
+				if (ADC_result < storeADC)
 				{
-					if (ADC_result < storeADC)
-					{
-						storeADC = ADC_result;
-					}
-					ADC_result_flag = 0;
-					ADCSRA |= ADCStart;
-								
+					storeADC = ADC_result;
 				}
+				ADC_result_flag = 0;
+				ADCSRA |= ADCStart;				
+			}
 		}		
-	
-//  			ReflectiveFlag = 0;
-// //			i++;
 		//Black
 		//if (storeADC > 860 && storeADC < 900)
 		if (storeADC >= 860 && storeADC <= 1000 && ReflectiveFlag == 0)
@@ -172,14 +154,14 @@ int main (void)
 			PORTD = 0b00100000;
 		}
 		//Aluminum
-		else if (storeADC <= 200 && ReflectiveFlag == 0)
+		else if (storeADC <= 300 && ReflectiveFlag == 0)
 		{
 			insert_data(input, 0);
 			storeADC = 1023;
 			PORTD = 0b01000000;
 		}
 		//Steal
-		else if (storeADC >= 199 && storeADC <= 699 && ReflectiveFlag == 0)
+		else if (storeADC >= 301 && storeADC <= 699 && ReflectiveFlag == 0)
 		{
 			insert_data(input, 2);
 			storeADC = 1023;
@@ -203,21 +185,5 @@ int main (void)
 // 		}
 		//increment the count to keep track of how many pieces have passed
 		input->size ++;
-		
-// 		}//end if
-// 		if(EndofBeltFlag == 1)
-// 		{
-// 			pwmbrake();
-// 			EndofBeltFlag = 0;
-// 		}
-// 		if (i > 15)
-// 		{
-// 			i = 0;
-// 			display_data(input);
-// 			usartTXs("Pop data 1\n\r");
-// 			usartTX (pop_data(input)+0x30);
-// 			usartTXs("\n\rPop data 2\n\r");
-// 			usartTX (pop_data(input)+0x30);
-// 		}//end if
 	}//end while
 }//end main
