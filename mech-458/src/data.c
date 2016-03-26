@@ -68,6 +68,14 @@ void clearQueue (struct data *input)
 {
 	uint8_t i;
 	
+	input->head = 0;
+	input->tail = 0;
+	input->black = 0;
+	input->white = 0;
+	input->aluminum = 0;
+	input->steal = 0;
+	input->datapulled = 0;
+	
 	for (i=0; i<16; i++)
 	{
 		input->queue[i] = 0x00;
@@ -89,4 +97,47 @@ void displayVal (uint16_t storeADC)
 	usartTX(ones + 0x30);
 	usartTX('\n');
 	usartTX('\r');
+}
+
+void calibration (void)
+{
+
+	char ones, tens, hundereds, thousands;
+	
+	usartTXs("Entering calibration mode\n\r");
+	usartTXs("-------------------------\n\r");	
+	
+	calibrationFlag = 0;
+	
+	while (1)
+	{
+		if (calibrationFlag == 1)
+		{
+			pwmcw();
+			calibrationFlag = 0;
+		}
+		if (ReflectiveFlag == 1)
+		{
+			while(ADC_result_flag == 1)
+			{
+				ones = (ADC_result % 10);
+				tens = ((ADC_result / 10) % 10);
+				hundereds = ((ADC_result / 100) % 10);
+				thousands = ((ADC_result / 1000) % 10);
+				usartTX(thousands + 0x30);
+				usartTX(hundereds + 0x30);
+				usartTX(tens + 0x30);
+				usartTX(ones + 0x30);
+				usartTX('\n');
+				usartTX('\r');	
+				ADC_result_flag = 0;
+				ADCSRA |= ADCStart;
+			}
+		}
+	
+		if(EndofBeltFlag == 1);
+		{
+			pwmbrake();	
+		}
+	}
 }

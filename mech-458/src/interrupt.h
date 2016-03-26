@@ -23,6 +23,7 @@ extern volatile unsigned char ReflectiveFlag;
 extern volatile unsigned char PauseFlag;
 extern volatile unsigned char RampDownFlag;
 extern volatile unsigned char HomeFlag;
+extern volatile unsigned char calibrationFlag;
 
 
 #endif /* INTERRUPT_H_ */

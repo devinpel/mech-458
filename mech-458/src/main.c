@@ -43,6 +43,7 @@ volatile unsigned char ReflectiveFlag;
 volatile unsigned char PauseFlag;
 volatile unsigned char RampDownFlag;
 volatile unsigned char HomeFlag;
+volatile unsigned char calibrationFlag;
 
 
 volatile unsigned char tim3tickflag;
@@ -59,10 +60,8 @@ int main (void)
 	board_init();
 	
 	uint16_t storeADC = 1023;
-//	char i = 0;
 	struct data *input, in;
 
-	
 	char lastpart;
 	char nextpart;
 		
@@ -96,20 +95,20 @@ int main (void)
 	DDRC = 0b11111111; /* Sets all pins on Port C to output */	
 	
 	ADCSRA |= ADCStart;
-	
-	input->head = 0;
-	input->tail = 0;
-	input->size = 0;
-	input->datapulled = 0;
+
 	clearQueue(input);
 	
 	usartTXs("Serial port initialized\n\r");
-	usartTXs("Entering calibration mode\n\r");
 	usartTXs("-------------------------\n\r");	
 	homestepper();
 	pwmcw();
 	
 	EndofBeltFlag = 0;
+	
+	if (calibrationFlag == 1);
+	{
+		calibration();
+	}
 			
 	while(1)
 	{
@@ -117,7 +116,6 @@ int main (void)
 		if ((input->datapulled == 0) && (input->head != input->tail))
 		{
 			nextpart = pop_data(input);
-			//usartTXs("here");
 		}
 		
 		else if (lastpart != nextpart)
@@ -133,30 +131,6 @@ int main (void)
 			pwmcw();
 			EndofBeltFlag = 0;
 		}
-/*		
-		
-		if (tim3tickflag == delaytim3)
-		{	
-			if (lastpart != nextpart)
-			{
-				lastpart = movestepper(nextpart, lastpart);
-			}
-		
-			else if((lastpart == nextpart) && (input->head > input->tail))
-			{
-				if ((EndofBeltFlag == 1))
-				{
-				nextpart = pop_data(input);
-				usartTXs("oops");
-				
-				EndofBeltFlag = 0;
-				pwmcw();
-				}
-			}
-			//setup next and last part
-						
-		}
-		*/
 		if (ReflectiveFlag == 1)
 		{	
 			if(ADC_result_flag == 1)
@@ -171,13 +145,12 @@ int main (void)
 		}		
 	
 		//Black
-		//if (storeADC > 860 && storeADC < 900)
 		if (storeADC >= 915 && storeADC <= 1000 && ReflectiveFlag == 0)
 		{
 			insert_data(input, 1);
 			displayVal(storeADC);
 			storeADC = 1023;
-			PORTD = 0b00010000;
+			input->black++;
 		}
 		//White
 		else if (storeADC >= 720 && storeADC <= 914 && ReflectiveFlag == 0)
@@ -185,7 +158,7 @@ int main (void)
 			insert_data(input, 3);
 			displayVal(storeADC);
 			storeADC = 1023;
-			PORTD = 0b00100000;
+			input->white++;
 		}
 		//Aluminum
 		else if (storeADC <= 300 && ReflectiveFlag == 0)
@@ -193,7 +166,7 @@ int main (void)
 			insert_data(input, 0);
 			displayVal(storeADC);
 			storeADC = 1023;
-			PORTD = 0b01000000;
+			input->aluminum++;
 		}
 		//Steal
 		else if (storeADC >= 301 && storeADC <= 719 && ReflectiveFlag == 0)
@@ -201,25 +174,13 @@ int main (void)
 			insert_data(input, 2);
 			displayVal(storeADC);
 			storeADC = 1023;
-			PORTD = 0b10000000;
+			input->steal++;
 		}
 // 		else
 // 		{
 // 			usartTXs("Undetermined part\n\r");
-// 				
-// 			ones = (storeADC % 10);
-// 			tens = ((storeADC / 10) % 10);
-// 			hundereds = ((storeADC / 100) % 10);
-// 			thousands = ((storeADC / 1000) % 10);
-// 			usartTXs("Stored ADC\n\r");
-// 			usartTX(thousands + 0x30);
-// 			usartTX(hundereds + 0x30);
-// 			usartTX(tens + 0x30);
-// 			usartTX(ones + 0x30);
-// 			usartTX('\n');
-// 			usartTX('\r');
+//			input->unknown++;
 // 		}
 		//increment the count to keep track of how many pieces have passed
-		input->size ++;
 	}//end while
 }//end main
