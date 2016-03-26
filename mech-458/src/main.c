@@ -62,6 +62,7 @@ int main (void)
 	
 	uint16_t storeADC = 1023;
 	struct data *input, in;
+	uint8_t ones, tens, hundereds, thousands, sorted;
 
 	char lastpart;
 	char nextpart;
@@ -82,7 +83,7 @@ int main (void)
 	EndofBeltFlag = 0;
 	ADC_result_flag = 0;
 	RampDownFlag = 0;
-	
+	calibrationFlag = 0;
 	tim1tickflag = 0;
 	tim3tickflag = 0;
 	curstep = 0;
@@ -104,15 +105,17 @@ int main (void)
 	
 	usartTXs("Serial port initialized\n\r");
 	usartTXs("-------------------------\n\r");	
+	
 	homestepper();
 	pwmcw();
 	
 	EndofBeltFlag = 0;
 	
-	if (calibrationFlag == 1);
+	if (calibrationFlag == 1)
 	{
 		calibration();
 	}
+	
 			
 	while(1)
 	{
@@ -133,6 +136,10 @@ int main (void)
 			input->datapulled = 0;
 			pwmcw();
 			EndofBeltFlag = 0;
+			tim1tickflag = 0;
+			while (tim1tickflag <= 1)
+			{
+			}
 		}
 		if (ReflectiveFlag == 1)
 		{	
@@ -148,68 +155,119 @@ int main (void)
 		}		
 	
 		//Black
-		if (storeADC >= 915 && storeADC <= 1000 && ReflectiveFlag == 0)
+		if (storeADC >= 836 && storeADC <= 1000 && ReflectiveFlag == 0)
 		{
 			insert_data(input, 1);
 			displayVal(storeADC);
 			storeADC = 1023;
 			input->black++;
+			sorted = 1;
 		}
 		//White
-		else if (storeADC >= 720 && storeADC <= 914 && ReflectiveFlag == 0)
+		else if (storeADC >= 775 && storeADC <= 835 && ReflectiveFlag == 0)
 		{
 			insert_data(input, 3);
 			displayVal(storeADC);
 			storeADC = 1023;
 			input->white++;
+			sorted = 1;
 		}
 		//Aluminum
-		else if (storeADC <= 300 && ReflectiveFlag == 0)
+		else if (storeADC >= 50 && storeADC <= 100 && ReflectiveFlag == 0)
 		{
 			insert_data(input, 0);
 			displayVal(storeADC);
 			storeADC = 1023;
 			input->aluminum++;
+			sorted = 1;
 		}
 		//Steal
-		else if (storeADC >= 301 && storeADC <= 719 && ReflectiveFlag == 0)
+		else if (storeADC >= 400 && storeADC <= 650 && ReflectiveFlag == 0)
 		{
 			insert_data(input, 2);
 			displayVal(storeADC);
 			storeADC = 1023;
 			input->steal++;
+			sorted = 1;
 		}
-/*		
-// 		else
-// 		{
-// 			usartTXs("Undetermined part\n\r");
-//			input->unknown++;
-// 		}
-		//increment the count to keep track of how many pieces have passed */
 		
-// 		if (PauseFlag == 1)
-// 		{
-// 			
-// 		}
-// 		PORTD |= 0xF0;
-// 		if (RampDownFlag == 1)
-// 		{
-// 			//start 10 second timer
-// 			//tim1tickflag = 0;
-// 			PORTD |= 0xF0;
-// 			if (ReflectiveFlag == 1)
-// 			{
-// 				//restart 10 second timer
-// 			}
-// 			
-// 			if (tim1tickflag == 10) //got to ten seconds
-// 			{
-// 				PORTD |= 0xF0;
-// 			}
-// 		}
-		
+		else if (storeADC < 1023 && ReflectiveFlag == 1)
+		{
+			usartTXs("Undetermined part\n\r");
 			
+			ones = (storeADC % 10);
+			tens = ((storeADC / 10) % 10);
+			hundereds = ((storeADC / 100) % 10);
+			thousands = ((storeADC / 1000) % 10);
+
+			usartTX(thousands + 0x30);
+			usartTX(hundereds + 0x30);
+			usartTX(tens + 0x30);
+			usartTX(ones + 0x30);
+			usartTX('\n');
+			usartTX('\r');
+			
+			storeADC = 1023;
+			input->unknown++;
+		}
+		sorted = 0;
+		//increment the count to keep track of how many pieces have passed 		
 		
+		if (PauseFlag == 1)
+		{
+			usartTXs("Aluminum\t");
+			usartTX((input->aluminum /10) % 10 + 0x30);
+			usartTX((input->aluminum) % 10 + 0x30);
+			usartTXs("\n\r");
+			usartTXs("Black\t");
+			usartTX((input->black /10) % 10 + 0x30);
+			usartTX((input->black) % 10 + 0x30);
+			usartTXs("\n\r");
+			usartTXs("Steel\t");
+			usartTX((input->steal /10) % 10 + 0x30);
+			usartTX((input->steal) % 10 + 0x30);
+			usartTXs("\n\r");
+			usartTXs("White\t");
+			usartTX((input->white /10) % 10 + 0x30);
+			usartTX((input->white) % 10 + 0x30);
+			usartTXs("\n\r");
+			usartTXs("Unknown\t");
+			usartTX((input->unknown /10) % 10 + 0x30);
+			usartTX((input->unknown) % 10 + 0x30);
+			usartTXs("\n\r");
+			
+			/*
+			usartTXs("Total\t");
+			usartTX((input->aluminum /10) % 10 + 0x30);
+			usartTX((input->aluminum) % 10 + 0x30);
+			usartTXs("\n\r");
+			*/
+			
+			PauseFlag = 0;
+			while (PauseFlag == 0)
+			{
+				pwmbrake();
+			}
+			pwmcw();
+			PauseFlag = 0;
+		}
 		
+		if (RampDownFlag == 1)
+		{
+			//start 10 second timer
+			//tim1tickflag = 0;
+			
+			if (ReflectiveFlag == 1)
+			{
+				//restart 10 second timer
+				tim1tickflag = 0;
+			}
+			
+			if (tim1tickflag == 20) //got to ten seconds
+			{
+				PORTD |= 0xF0;
+				pwmbrake();
+			}
+		}
 	}//end while
 }//end main

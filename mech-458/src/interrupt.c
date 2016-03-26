@@ -15,8 +15,9 @@ void interruptInit (void)
 	EICRB |= _BV(ISC41) | _BV(ISC40);	//Set ext int4 to rising edge, Pause button
 	EICRB |= _BV(ISC51) | _BV(ISC50);	//Set ext int5 to rising edge, Ramp down button
 	EICRB |= _BV(ISC61);				//Set ext int4 to falling edge, Home position
+	EICRB |= _BV(ISC71);				//Set ext int7 to falling edge, calibration
 	
-	EIMSK |= 0b11000111;				//Enable ext int1-int6
+	EIMSK |= 0b11110111;				//Enable ext int1-int6
 	//EIMSK |= 0b00100000;
 }
 

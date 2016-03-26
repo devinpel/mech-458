@@ -11,7 +11,7 @@ void timer3init (void)
 void timer1init (void)
 {
 	TCCR1B |= CTC;			//Turn on count to compare mode
-	TCCR1B |= pre1;			//Set timer prescaler to f/256
+	TCCR1B |= pre256;			//Set timer prescaler to f/256
 	TIMSK1 |= CMatchIntEn;	//Enable interrupt for the count match function in timer 1
 	OCR1A = 0x03E8;
 	TIFR1  |= CMatchIntFl; //Clear count match function interrupt flag timer 1

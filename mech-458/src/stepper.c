@@ -78,7 +78,7 @@ uint8_t movestepper(char nextpart, char lastpart)
 		}
 	}
 	
-	else if (move == 3 || move == -1)
+	else if (move == -3 || move == 1)
 	{
 		if (step < 25)
 		{
@@ -113,7 +113,7 @@ uint8_t movestepper(char nextpart, char lastpart)
 		}
 	}
 		
-	else if (move == 1 || move == -3)
+	else if (move == -1 || move == 3)
 	{
 		if (step < 25)
 		{

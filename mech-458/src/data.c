@@ -74,6 +74,7 @@ void clearQueue (struct data *input)
 	input->white = 0;
 	input->aluminum = 0;
 	input->steal = 0;
+	input->unknown = 0;
 	input->datapulled = 0;
 	
 	for (i=0; i<16; i++)
@@ -109,13 +110,11 @@ void calibration (void)
 	
 	calibrationFlag = 0;
 	
+	EIMSK &= ~(_BV(INT0));
+	
 	while (1)
 	{
-		if (calibrationFlag == 1)
-		{
-			pwmcw();
-			calibrationFlag = 0;
-		}
+
 		if (ReflectiveFlag == 1)
 		{
 			while(ADC_result_flag == 1)
@@ -128,16 +127,14 @@ void calibration (void)
 				usartTX(hundereds + 0x30);
 				usartTX(tens + 0x30);
 				usartTX(ones + 0x30);
-				usartTX('\n');
-				usartTX('\r');	
+				usartTXs("\n\r");
 				ADC_result_flag = 0;
 				ADCSRA |= ADCStart;
 			}
-		}
-	
-		if(EndofBeltFlag == 1);
-		{
-			pwmbrake();	
+			if (ReflectiveFlag == 0)
+			{
+				usartTXs("\n\r");
+			}
 		}
 	}
 }
