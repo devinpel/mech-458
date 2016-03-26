@@ -23,11 +23,12 @@ extern volatile unsigned char steps;
 extern volatile unsigned char lastpart;
 extern volatile unsigned char nextpart;
 extern volatile unsigned char delaytim3;
+extern volatile unsigned char tim1tickflag;
 
 
 //Function prototypes
 void timer3init (void);
-//void delaynms(int n);
+void timer1init (void);
 
 
 #endif /* TIM3_H_ */

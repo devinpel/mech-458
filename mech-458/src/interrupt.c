@@ -17,6 +17,7 @@ void interruptInit (void)
 	EICRB |= _BV(ISC61);				//Set ext int4 to falling edge, Home position
 	
 	EIMSK |= 0b11000111;				//Enable ext int1-int6
+	//EIMSK |= 0b00100000;
 }
 
 //End of belt sensor
@@ -48,6 +49,7 @@ ISR(INT4_vect)
 ISR(INT5_vect)
 {
 	RampDownFlag = 1;
+	tim1tickflag = 0;
 }
 
 //Stepper home

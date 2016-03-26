@@ -47,6 +47,7 @@ volatile unsigned char calibrationFlag;
 
 
 volatile unsigned char tim3tickflag;
+volatile unsigned char tim1tickflag;
 volatile unsigned char curstep;
 volatile unsigned char step;
 volatile unsigned char delaytim3;
@@ -71,6 +72,7 @@ int main (void)
 	adcinit();
 	pwminit(); 
 	stepperinit();
+	timer1init();
 	timer3init();
 	usartInit(0x000C);	//Set baud to 9600, too much error at higher bauds for 1MHz clock
 	interruptInit();
@@ -79,7 +81,9 @@ int main (void)
 	ReflectiveFlag = 0;
 	EndofBeltFlag = 0;
 	ADC_result_flag = 0;
+	RampDownFlag = 0;
 	
+	tim1tickflag = 0;
 	tim3tickflag = 0;
 	curstep = 0;
 	
@@ -112,7 +116,6 @@ int main (void)
 			
 	while(1)
 	{
-		
 		if ((input->datapulled == 0) && (input->head != input->tail))
 		{
 			nextpart = pop_data(input);
@@ -176,11 +179,37 @@ int main (void)
 			storeADC = 1023;
 			input->steal++;
 		}
+/*		
 // 		else
 // 		{
 // 			usartTXs("Undetermined part\n\r");
 //			input->unknown++;
 // 		}
-		//increment the count to keep track of how many pieces have passed
+		//increment the count to keep track of how many pieces have passed */
+		
+// 		if (PauseFlag == 1)
+// 		{
+// 			
+// 		}
+// 		PORTD |= 0xF0;
+// 		if (RampDownFlag == 1)
+// 		{
+// 			//start 10 second timer
+// 			//tim1tickflag = 0;
+// 			PORTD |= 0xF0;
+// 			if (ReflectiveFlag == 1)
+// 			{
+// 				//restart 10 second timer
+// 			}
+// 			
+// 			if (tim1tickflag == 10) //got to ten seconds
+// 			{
+// 				PORTD |= 0xF0;
+// 			}
+// 		}
+		
+			
+		
+		
 	}//end while
 }//end main

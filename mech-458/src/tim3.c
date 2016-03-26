@@ -8,10 +8,23 @@ void timer3init (void)
 	OCR3A = 0x03E8;
 	TIFR3  |= CMatchIntFl; //Clear count match function interrupt flag timer 1
 }
+void timer1init (void)
+{
+	TCCR1B |= CTC;			//Turn on count to compare mode
+	TCCR1B |= pre1;			//Set timer prescaler to f/256
+	TIMSK1 |= CMatchIntEn;	//Enable interrupt for the count match function in timer 1
+	OCR1A = 0x03E8;
+	TIFR1  |= CMatchIntFl; //Clear count match function interrupt flag timer 1
+}
 
+ISR(TIMER1_COMPA_vect)
+{
+	tim1tickflag++;	
+}
 
 ISR(TIMER3_COMPA_vect)
 {
+	
 	tim3tickflag++;
 /*	
 	if(nextpart == lastpart && tim3tickflag == 5)
@@ -157,7 +170,7 @@ ISR(TIMER3_COMPA_vect)
 */	
 	
 	
-	/*	
+/*	
 	if( tim3tickflag == 14 && steppermove == 1)	//Counter Clock Wise
 	{
 		steps++;
@@ -220,8 +233,6 @@ ISR(TIMER3_COMPA_vect)
 			tim3tickflag = 3;
 			break;				
 		}
-	}*/
-
-	
+	}*/	
 }
 
