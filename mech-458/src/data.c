@@ -66,6 +66,13 @@ void display_data (struct data *input)
 	}
 }
 
+void display_data_value (uint8_t val)
+{
+	usartTX((val /10) % 10 + 0x30);
+	usartTX((val) % 10 + 0x30);
+	usartTXs("\n\r");
+}
+
 void clearQueue (struct data *input)
 {
 	uint8_t i;
@@ -199,4 +206,54 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 	}	
 	
 	return storeADC;
+}
+
+void display_paused_data (struct data *input)
+{
+	uint8_t aluminum = 0, black = 0, white = 0, steel = 0;
+	uint8_t temp;
+	
+	for (temp = input->tail % 16; temp < (input->head % 16); temp++)
+	{
+		if (input->queue[temp] == 0)
+		{
+			aluminum++;
+		}
+		else if (input->queue[temp] == 1)
+		{
+			black ++;
+		}
+		else if (input->queue[temp] == 2)
+		{
+			steel ++;
+		}
+		else if (input->queue[temp] == 4)
+		{
+			white ++;
+		}
+	}
+	
+	usartTXs("Parts on the belt\n\r");
+	usartTXs("Aluminum\t");
+	display_data_value(aluminum);
+	usartTXs("Black\t");
+	display_data_value(black);
+	usartTXs("Steel\t");
+	display_data_value(steel);
+	usartTXs("White\t");
+	display_data_value(white);
+	usartTXs("Unsorted\t");
+	display_data_value(count - input ->head);
+	
+	
+	usartTXs("\n\rParts in the Bin\n\r");
+	usartTXs("Aluminum\t");
+	display_data_value(input->aluminum - aluminum);
+	usartTXs("Black\t");
+	display_data_value(input->black - black);
+	usartTXs("Steel\t");
+	display_data_value(input->steel - steel);
+	usartTXs("White\t");
+	display_data_value(input->white - white);
+	
 }

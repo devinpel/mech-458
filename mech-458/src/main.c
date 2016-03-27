@@ -216,7 +216,7 @@ int main (void)
 		
 		if (PauseFlag == 1)
 		{
-			usartTXs("Aluminum\t");
+/*			usartTXs("Aluminum\t");
 			usartTX((input->aluminum /10) % 10 + 0x30);
 			usartTX((input->aluminum) % 10 + 0x30);
 			usartTXs("\n\r");
@@ -237,13 +237,13 @@ int main (void)
 			usartTX((input->unknown) % 10 + 0x30);
 			usartTXs("\n\r");
 			
-			/*
+			
 			usartTXs("Total\t");
 			usartTX((input->aluminum /10) % 10 + 0x30);
 			usartTX((input->aluminum) % 10 + 0x30);
 			usartTXs("\n\r");
 			*/
-			
+			display_paused_data(input);
 			PauseFlag = 0;
 			while (PauseFlag == 0)
 			{

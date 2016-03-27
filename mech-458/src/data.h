@@ -29,15 +29,17 @@ struct data
 };
 
 extern volatile unsigned char calibrationFlag;
-volatile unsigned char EndofBeltFlag;
-volatile unsigned char ReflectiveFlag;
+extern volatile unsigned char count;
+extern volatile unsigned char ReflectiveFlag;
 
 void insert_data (struct data *input, uint8_t val);
 void display_data (struct data *input);
+void display_data_value (uint8_t val);
 void clearQueue (struct data *input);
 uint8_t pop_data (struct data *input);
 void displayVal (uint16_t storeADC);
 void calibration (void);
 uint16_t sort_data (struct data *input, uint16_t storeADC);
+void display_paused_data (struct data *input);
 
 #endif /* DATA_H_ */
