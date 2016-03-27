@@ -22,7 +22,7 @@ struct data
 	uint8_t black;
 	uint8_t white;
 	uint8_t aluminum;
-	uint8_t steal;
+	uint8_t steel;
 	uint8_t unknown;
 	uint8_t queue [16];
 	uint8_t datapulled;
@@ -38,5 +38,6 @@ void clearQueue (struct data *input);
 uint8_t pop_data (struct data *input);
 void displayVal (uint16_t storeADC);
 void calibration (void);
+uint16_t sort_data (struct data *input, uint16_t storeADC);
 
 #endif /* DATA_H_ */

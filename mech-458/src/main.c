@@ -62,7 +62,6 @@ int main (void)
 	
 	uint16_t storeADC = 1023;
 	struct data *input, in;
-	uint8_t ones, tens, hundereds, thousands, sorted;
 
 	char lastpart;
 	char nextpart;
@@ -137,23 +136,28 @@ int main (void)
 			pwmcw();
 			EndofBeltFlag = 0;
 			tim1tickflag = 0;
-			while (tim1tickflag <= 1)
-			{
-			}
+			while (tim1tickflag <= 1);
 		}
 		if (ReflectiveFlag == 1)
 		{	
 			if(ADC_result_flag == 1)
 			{
+				//Look for the min value from ADC as a part moves past the sensor
 				if (ADC_result < storeADC)
 				{
 					storeADC = ADC_result;
+				}
+				//Once the min value has been found, sort it and store into array.
+				else
+				{
+					storeADC = sort_data (input, storeADC);
 				}
 				ADC_result_flag = 0;
 				ADCSRA |= ADCStart;				
 			}
 		}		
 	
+/*	
 		//Black
 		if (storeADC >= 836 && storeADC <= 1000 && ReflectiveFlag == 0)
 		{
@@ -161,8 +165,7 @@ int main (void)
 			displayVal(storeADC);
 			storeADC = 1023;
 			input->black++;
-			sorted = 1;
-		}
+			}
 		//White
 		else if (storeADC >= 775 && storeADC <= 835 && ReflectiveFlag == 0)
 		{
@@ -170,7 +173,6 @@ int main (void)
 			displayVal(storeADC);
 			storeADC = 1023;
 			input->white++;
-			sorted = 1;
 		}
 		//Aluminum
 		else if (storeADC >= 50 && storeADC <= 100 && ReflectiveFlag == 0)
@@ -181,14 +183,13 @@ int main (void)
 			input->aluminum++;
 			sorted = 1;
 		}
-		//Steal
+		//steel
 		else if (storeADC >= 400 && storeADC <= 650 && ReflectiveFlag == 0)
 		{
 			insert_data(input, 2);
 			displayVal(storeADC);
 			storeADC = 1023;
-			input->steal++;
-			sorted = 1;
+			input->steel++;
 		}
 		
 		else if (storeADC < 1023 && ReflectiveFlag == 1)
@@ -210,7 +211,7 @@ int main (void)
 			storeADC = 1023;
 			input->unknown++;
 		}
-		sorted = 0;
+*/
 		//increment the count to keep track of how many pieces have passed 		
 		
 		if (PauseFlag == 1)
@@ -224,8 +225,8 @@ int main (void)
 			usartTX((input->black) % 10 + 0x30);
 			usartTXs("\n\r");
 			usartTXs("Steel\t");
-			usartTX((input->steal /10) % 10 + 0x30);
-			usartTX((input->steal) % 10 + 0x30);
+			usartTX((input->steel /10) % 10 + 0x30);
+			usartTX((input->steel) % 10 + 0x30);
 			usartTXs("\n\r");
 			usartTXs("White\t");
 			usartTX((input->white /10) % 10 + 0x30);

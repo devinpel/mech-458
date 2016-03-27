@@ -5,7 +5,7 @@
  *  Author: Tristan
  *	aluminum 0
  *	black 1
- *  steal 2
+ *  steel 2
  *	White 3
  *
  */ 
@@ -27,7 +27,9 @@ uint8_t pop_data (struct data *input)
 	
 	if(input->tail >= input->head)
 	{
-		usartTXs("ERROR tail has over run head");
+		usartTXs("ERROR tail has over run head\n\r");
+		usartTXs("Resetting Tail\n\r");
+		input->tail = input->head;
 	}
 	input->datapulled = 1;
 	temp = input->queue[input->tail % 16];
@@ -73,7 +75,7 @@ void clearQueue (struct data *input)
 	input->black = 0;
 	input->white = 0;
 	input->aluminum = 0;
-	input->steal = 0;
+	input->steel = 0;
 	input->unknown = 0;
 	input->datapulled = 0;
 	
@@ -137,4 +139,64 @@ void calibration (void)
 			}
 		}
 	}
+}
+
+uint16_t sort_data (struct data *input, uint16_t storeADC)
+{
+	uint8_t ones, tens, hundereds, thousands;
+	
+	//Black
+	if (storeADC >= 836 && storeADC <= 1000)
+	{
+		insert_data(input, 1);
+		displayVal(storeADC);
+		storeADC = 1023;
+		input->black++;
+	}
+	//White
+	else if (storeADC >= 775 && storeADC <= 835)
+	{
+		insert_data(input, 3);
+		displayVal(storeADC);
+		storeADC = 1023;
+		input->white++;
+	}
+	//Aluminum
+	else if (storeADC >= 50 && storeADC <= 100)
+	{
+		insert_data(input, 0);
+		displayVal(storeADC);
+		storeADC = 1023;
+		input->aluminum++;
+	}
+	//steel
+	else if (storeADC >= 400 && storeADC <= 650)
+	{
+		insert_data(input, 2);
+		displayVal(storeADC);
+		storeADC = 1023;
+		input->steel++;
+	}
+
+	else if (storeADC < 1023)
+	{
+		usartTXs("Undetermined part\n\r");
+	
+		ones = (storeADC % 10);
+		tens = ((storeADC / 10) % 10);
+		hundereds = ((storeADC / 100) % 10);
+		thousands = ((storeADC / 1000) % 10);
+
+		usartTX(thousands + 0x30);
+		usartTX(hundereds + 0x30);
+		usartTX(tens + 0x30);
+		usartTX(ones + 0x30);
+		usartTX('\n');
+		usartTX('\r');
+	
+		storeADC = 1023;
+		input->unknown++;
+	}	
+	
+	return storeADC;
 }
