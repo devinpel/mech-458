@@ -19,7 +19,7 @@ void homestepper(void)
 		{
 			nextstep = 0;
 		}
-		if (tim3tickflag == delaytim3)
+		if (tim1tickflag == delaytim3)
 		{
 			casefunc(nextstep);
 		}
@@ -78,7 +78,7 @@ uint8_t movestepper(char nextpart, char lastpart)
 		}
 	}
 	
-	else if (move == -3 || move == 1)
+	else if (move == 3 || move == -1)
 	{
 		if (step < 25)
 		{
@@ -113,7 +113,7 @@ uint8_t movestepper(char nextpart, char lastpart)
 		}
 	}
 		
-	else if (move == -1 || move == 3)
+	else if (move == 1 || move == -3)
 	{
 		if (step < 25)
 		{
@@ -157,25 +157,25 @@ void casefunc(uint8_t nextstep)
 		case 0:
 		PORTA = 0b00000011;		//step 1
 		curstep = 0;
-		tim3tickflag = 0;
+		tim1tickflag = 0;
 		break;
 		
 		case 1:
 		PORTA = 0b00011000;		//step 2
 		curstep = 1;
-		tim3tickflag = 0;
+		tim1tickflag = 0;
 		break;
 		
 		case 2:
 		PORTA = 0b00000101;		//step 3
 		curstep = 2;
-		tim3tickflag = 0;
+		tim1tickflag = 0;
 		break;
 		
 		case 3:
 		PORTA = 0b00101000;		//step 4
 		curstep = 3;
-		tim3tickflag = 0;
+		tim1tickflag = 0;
 		break;
 	}
 }

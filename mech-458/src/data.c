@@ -153,7 +153,7 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 	uint8_t ones, tens, hundereds, thousands;
 	
 	//Black
-	if (storeADC >= 836 && storeADC <= 1000)
+	if (storeADC >= 936 && storeADC <= 1000)
 	{
 		insert_data(input, 1);
 		displayVal(storeADC);
@@ -161,7 +161,7 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 		input->black++;
 	}
 	//White
-	else if (storeADC >= 775 && storeADC <= 835)
+	else if (storeADC >= 840 && storeADC <= 935)
 	{
 		insert_data(input, 3);
 		displayVal(storeADC);
@@ -169,7 +169,7 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 		input->white++;
 	}
 	//Aluminum
-	else if (storeADC >= 50 && storeADC <= 100)
+	else if (storeADC >= 0 && storeADC <= 375)
 	{
 		insert_data(input, 0);
 		displayVal(storeADC);
@@ -177,7 +177,7 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 		input->aluminum++;
 	}
 	//steel
-	else if (storeADC >= 400 && storeADC <= 650)
+	else if (storeADC >= 376 && storeADC <= 839)
 	{
 		insert_data(input, 2);
 		displayVal(storeADC);
@@ -185,25 +185,25 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 		input->steel++;
 	}
 
-	else if (storeADC < 1023)
-	{
-		usartTXs("Undetermined part\n\r");
-	
-		ones = (storeADC % 10);
-		tens = ((storeADC / 10) % 10);
-		hundereds = ((storeADC / 100) % 10);
-		thousands = ((storeADC / 1000) % 10);
-
-		usartTX(thousands + 0x30);
-		usartTX(hundereds + 0x30);
-		usartTX(tens + 0x30);
-		usartTX(ones + 0x30);
-		usartTX('\n');
-		usartTX('\r');
-	
-		storeADC = 1023;
-		input->unknown++;
-	}	
+// 	else if (storeADC < 1023)
+// 	{
+// 		usartTXs("Undetermined part\n\r");
+// 	
+// 		ones = (storeADC % 10);
+// 		tens = ((storeADC / 10) % 10);
+// 		hundereds = ((storeADC / 100) % 10);
+// 		thousands = ((storeADC / 1000) % 10);
+// 
+// 		usartTX(thousands + 0x30);
+// 		usartTX(hundereds + 0x30);
+// 		usartTX(tens + 0x30);
+// 		usartTX(ones + 0x30);
+// 		usartTX('\n');
+// 		usartTX('\r');
+// 	
+// 		storeADC = 1023;
+// 		input->unknown++;
+// 	}	
 	
 	return storeADC;
 }

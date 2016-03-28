@@ -3,7 +3,7 @@
 void timer3init (void)
 {
 	TCCR3B |= CTC;			//Turn on count to compare mode
-	TCCR3B |= pre1;			//Set timer prescaler to f/256
+	TCCR3B |= pre64;			//Set timer prescaler to f/256
 	TIMSK3 |= CMatchIntEn;	//Enable interrupt for the count match function in timer 1
 	OCR3A = 0x03E8;
 	TIFR3  |= CMatchIntFl; //Clear count match function interrupt flag timer 1
@@ -11,7 +11,7 @@ void timer3init (void)
 void timer1init (void)
 {
 	TCCR1B |= CTC;			//Turn on count to compare mode
-	TCCR1B |= pre256;			//Set timer prescaler to f/256
+	TCCR1B |= pre1;			//Set timer prescaler to f/256
 	TIMSK1 |= CMatchIntEn;	//Enable interrupt for the count match function in timer 1
 	OCR1A = 0x03E8;
 	TIFR1  |= CMatchIntFl; //Clear count match function interrupt flag timer 1
@@ -26,7 +26,120 @@ ISR(TIMER3_COMPA_vect)
 {
 	
 	tim3tickflag++;
-/*	
+	/*
+	move = lastpart - nextpart;
+	
+	
+	if (move == 2 || move == -2)
+	{
+		if (step < 50)
+		{
+			delaytim3 = delaytim3 - (delaytim3 / 10);
+			if (delaytim3 < accel)
+			{
+				delaytim3 = accel;
+			}
+		}
+		if (step > 75)
+		{
+			delaytim3 = delaytim3 + (delaytim3 / 10);
+			if (delaytim3 > delayconst)
+			{
+				delaytim3 = delayconst;
+			}
+		}
+		
+		nextstep = curstep - 1;
+		
+		if (nextstep == -1)
+		{
+			nextstep = 3;
+		}
+		if (step <= 100)
+		{
+			casefunc(nextstep);
+			step++;
+		}
+		if (step >= 100)
+		{
+			step = 0;
+			lastpart = nextpart;
+		}
+	}
+	
+	else if (move == 3 || move == -1)
+	{
+		if (step < 25)
+		{
+			delaytim3 = delaytim3 - (delaytim3 / 10);
+			if (delaytim3 < accel)
+			{
+				delaytim3 = accel;
+			}
+		}
+		if (step > 25)
+		{
+			delaytim3 = delaytim3 + (delaytim3 / 10);
+			if (delaytim3 > delayconst)
+			{
+				delaytim3 = delayconst;
+			}
+		}
+		nextstep = curstep - 1;
+		if (nextstep == -1)
+		{
+			nextstep = 3;
+		}
+		if (step <= 50)
+		{
+			casefunc(nextstep);
+			step++;
+		}
+		if (step >= 50)
+		{
+			step = 0;
+			lastpart = nextpart;
+		}
+	}
+	
+	else if (move == 1 || move == -3)
+	{
+		if (step < 25)
+		{
+			delaytim3 = delaytim3 - (delaytim3 / 10);
+			if (delaytim3 < accel)
+			{
+				delaytim3 = accel;
+			}
+		}
+		if (step > 25)
+		{
+			delaytim3 = delaytim3 + (delaytim3 / 10);
+			if (delaytim3 > delayconst)
+			{
+				delaytim3 = delayconst;
+			}
+		}
+		nextstep = curstep + 1;
+		if (nextstep == 4)
+		{
+			nextstep = 0;
+		}
+		if (step <= 50)
+		{
+			casefunc(nextstep);
+			step++;
+		}
+		if (step >= 50)
+		{
+			step = 0;
+			lastpart = nextpart;
+		}
+	}
+	
+	*/
+	
+/*
 	if(nextpart == lastpart && tim3tickflag == 5)
 	{
 		delaytim3 = 36;
@@ -48,7 +161,7 @@ ISR(TIMER3_COMPA_vect)
 			delaytim3 = 36;
 			steps = 0;
 			lastpart = nextpart;
-			nextpart = 3;
+			
 		}
 		switch (curstep)
 		{
@@ -93,7 +206,7 @@ ISR(TIMER3_COMPA_vect)
 			delaytim3 = 36;
 			steps = 0;
 			lastpart = nextpart;
-			nextpart = 2;
+			
 		}
 		switch (curstep)
 		{
@@ -138,7 +251,7 @@ ISR(TIMER3_COMPA_vect)
 			delaytim3 = 36;
 			steps = 0;
 			lastpart = nextpart;
-			nextpart = 2;
+			
 		}
 		switch (curstep)
 		{
@@ -167,8 +280,8 @@ ISR(TIMER3_COMPA_vect)
 			break;
 		}
 	}
-*/	
-	
+
+	*/
 	
 /*	
 	if( tim3tickflag == 14 && steppermove == 1)	//Counter Clock Wise

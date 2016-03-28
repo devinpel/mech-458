@@ -49,9 +49,13 @@ volatile unsigned char calibrationFlag;
 volatile unsigned char tim3tickflag;
 volatile unsigned char tim1tickflag;
 volatile unsigned char curstep;
+volatile unsigned char steps;
 volatile unsigned char step;
 volatile unsigned char delaytim3;
+volatile unsigned char steppermove;
 
+//volatile unsigned char lastpart;
+//volatile unsigned char nextpart;
 
 
 int main (void)
@@ -59,12 +63,13 @@ int main (void)
 	// Insert system clock initialization code here (sysclk_init()).
 
 	board_init();
-	
+	uint8_t ones, tens, hundereds, thousands;
 	uint16_t storeADC = 1023;
 	struct data *input, in;
 
 	char lastpart;
 	char nextpart;
+	char stored;
 		
 	input = &in;
 	
@@ -86,6 +91,7 @@ int main (void)
 	tim1tickflag = 0;
 	tim3tickflag = 0;
 	curstep = 0;
+	stored = 0;
 	
 	step = 0;
 	lastpart = 1;
@@ -118,6 +124,8 @@ int main (void)
 			
 	while(1)
 	{
+		
+		//case
 		if ((input->datapulled == 0) && (input->head != input->tail))
 		{
 			nextpart = pop_data(input);
@@ -125,7 +133,7 @@ int main (void)
 		
 		else if (lastpart != nextpart)
 		{
-			if (tim3tickflag == delaytim3)
+			if (tim1tickflag == delaytim3)
 			{
 				lastpart = movestepper(nextpart, lastpart);
 			}
@@ -135,9 +143,11 @@ int main (void)
 			input->datapulled = 0;
 			pwmcw();
 			EndofBeltFlag = 0;
-			tim1tickflag = 0;
-			while (tim1tickflag <= 1);
+			tim3tickflag = 0;
+			while (tim3tickflag <= 2);
 		}
+		
+		//case
 		if (ReflectiveFlag == 1)
 		{	
 			if(ADC_result_flag == 1)
@@ -146,20 +156,30 @@ int main (void)
 				if (ADC_result < storeADC)
 				{
 					storeADC = ADC_result;
+					
 				}
 				//Once the min value has been found, sort it and store into array.
-				else
-				{
-					storeADC = sort_data (input, storeADC);
-				}
+// 				else
+// 				{
+// 					storeADC = sort_data (input, storeADC);
+// 					stored = 1;
+// 				}
 				ADC_result_flag = 0;
 				ADCSRA |= ADCStart;				
 			}
-		}		
+		}
+// 		else if (ReflectiveFlag == 0)
+// 		{
+// 			stored = 0;
+// 		}	
+// 		else
+// 		{
+// 			stored = 0;
+// 		}
 	
-/*	
+	
 		//Black
-		if (storeADC >= 836 && storeADC <= 1000 && ReflectiveFlag == 0)
+		if (storeADC >= 930 && storeADC <= 1000 && ReflectiveFlag == 0)
 		{
 			insert_data(input, 1);
 			displayVal(storeADC);
@@ -167,7 +187,7 @@ int main (void)
 			input->black++;
 			}
 		//White
-		else if (storeADC >= 775 && storeADC <= 835 && ReflectiveFlag == 0)
+		else if (storeADC >= 846 && storeADC <= 929 && ReflectiveFlag == 0)
 		{
 			insert_data(input, 3);
 			displayVal(storeADC);
@@ -175,16 +195,15 @@ int main (void)
 			input->white++;
 		}
 		//Aluminum
-		else if (storeADC >= 50 && storeADC <= 100 && ReflectiveFlag == 0)
+		else if (storeADC >= 0 && storeADC <= 375 && ReflectiveFlag == 0)
 		{
 			insert_data(input, 0);
 			displayVal(storeADC);
 			storeADC = 1023;
 			input->aluminum++;
-			sorted = 1;
 		}
 		//steel
-		else if (storeADC >= 400 && storeADC <= 650 && ReflectiveFlag == 0)
+		else if (storeADC >= 376 && storeADC <= 845 && ReflectiveFlag == 0)
 		{
 			insert_data(input, 2);
 			displayVal(storeADC);
@@ -192,27 +211,27 @@ int main (void)
 			input->steel++;
 		}
 		
-		else if (storeADC < 1023 && ReflectiveFlag == 1)
-		{
-			usartTXs("Undetermined part\n\r");
-			
-			ones = (storeADC % 10);
-			tens = ((storeADC / 10) % 10);
-			hundereds = ((storeADC / 100) % 10);
-			thousands = ((storeADC / 1000) % 10);
+// 		else if (storeADC < 1023 && ReflectiveFlag == 1)
+// 		{
+// 			usartTXs("Undetermined part\n\r");
+// 			
+// 			ones = (storeADC % 10);
+// 			tens = ((storeADC / 10) % 10);
+// 			hundereds = ((storeADC / 100) % 10);
+// 			thousands = ((storeADC / 1000) % 10);
+// 
+// 			usartTX(thousands + 0x30);
+// 			usartTX(hundereds + 0x30);
+// 			usartTX(tens + 0x30);
+// 			usartTX(ones + 0x30);
+// 			usartTX('\n');
+// 			usartTX('\r');
+// 			
+// 			storeADC = 1023;
+// 			input->unknown++;
+// 		}
 
-			usartTX(thousands + 0x30);
-			usartTX(hundereds + 0x30);
-			usartTX(tens + 0x30);
-			usartTX(ones + 0x30);
-			usartTX('\n');
-			usartTX('\r');
-			
-			storeADC = 1023;
-			input->unknown++;
-		}
-*/
-		//increment the count to keep track of how many pieces have passed 		
+	//increment the count to keep track of how many pieces have passed 		
 		
 		if (PauseFlag == 1)
 		{
