@@ -43,17 +43,18 @@ uint8_t movestepper(char nextpart, char lastpart)
 	move = lastpart - nextpart;
 	if (move == 2 || move == -2)
 	{
-		if (step < 50)
+		if (step < 20)
 		{
-			delaytim3 = delaytim3 - (delaytim3 / 10);
+			delaytim3--;
 			if (delaytim3 < accel)
 			{
 				delaytim3 = accel;
 			}
 		}
-		if (step > 75)
+		if (step > 80)
 		{
-			delaytim3 = delaytim3 + (delaytim3 / 10);
+			//delaytim3 = delaytim3 + (delaytim3 / 10);
+			delaytim3++;
 			if (delaytim3 > delayconst)
 			{
 				delaytim3 = delayconst;
@@ -80,17 +81,19 @@ uint8_t movestepper(char nextpart, char lastpart)
 	
 	else if (move == 3 || move == -1)
 	{
-		if (step < 25)
+		if (step < 20)
 		{
-			delaytim3 = delaytim3 - (delaytim3 / 10);
+			//delaytim3 = delaytim3 - (delaytim3 / 10);
+			delaytim3--;
 			if (delaytim3 < accel)
 			{
 				delaytim3 = accel;
 			}
 		}
-		if (step > 25)
+		if (step > 34)
 		{
-			delaytim3 = delaytim3 + (delaytim3 / 10);
+			//delaytim3 = delaytim3 + (delaytim3 / 10);
+			delaytim3--;
 			if (delaytim3 > delayconst)
 			{
 				delaytim3 = delayconst;
@@ -115,7 +118,7 @@ uint8_t movestepper(char nextpart, char lastpart)
 		
 	else if (move == 1 || move == -3)
 	{
-		if (step < 25)
+		if (step < 20)
 		{
 			delaytim3 = delaytim3 - (delaytim3 / 10);
 			if (delaytim3 < accel)
@@ -123,9 +126,10 @@ uint8_t movestepper(char nextpart, char lastpart)
 				delaytim3 = accel;
 			}
 		}
-		if (step > 25)
+		if (step > 34)
 		{
-			delaytim3 = delaytim3 + (delaytim3 / 10);
+			//delaytim3 = delaytim3 + (delaytim3 / 10);
+			delaytim3++;
 			if (delaytim3 > delayconst)
 			{
 				delaytim3 = delayconst;
