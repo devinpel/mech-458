@@ -133,7 +133,7 @@ int main (void)
 		
 		else if (lastpart != nextpart)
 		{
-			if (tim1tickflag == delaytim3)
+			if (tim1tickflag == delaytim3 && tim3tickflag >= 2)
 			{
 				lastpart = movestepper(nextpart, lastpart);
 			}
@@ -144,7 +144,8 @@ int main (void)
 			pwmcw();
 			EndofBeltFlag = 0;
 			tim3tickflag = 0;
-			while (tim3tickflag <= 2);
+			//while (tim3tickflag <= 2);
+			tim1tickflag = 0;
 		}
 		
 		//case
@@ -161,23 +162,17 @@ int main (void)
 				//Once the min value has been found, sort it and store into array.
 // 				else
 // 				{
-// 					storeADC = sort_data (input, storeADC);
-// 					stored = 1;
+// 					
 // 				}
 				ADC_result_flag = 0;
 				ADCSRA |= ADCStart;				
 			}
 		}
-// 		else if (ReflectiveFlag == 0)
-// 		{
-// 			stored = 0;
-// 		}	
-// 		else
-// 		{
-// 			stored = 0;
-// 		}
-	
-	
+		if (storeADC < 1023 && ReflectiveFlag == 0)
+		{
+			storeADC = sort_data (input, storeADC);
+		}
+/*		
 		//Black
 		if (storeADC >= 930 && storeADC <= 1000 && ReflectiveFlag == 0)
 		{
@@ -230,38 +225,11 @@ int main (void)
 // 			storeADC = 1023;
 // 			input->unknown++;
 // 		}
-
+*/
 	//increment the count to keep track of how many pieces have passed 		
 		
 		if (PauseFlag == 1)
 		{
-/*			usartTXs("Aluminum\t");
-			usartTX((input->aluminum /10) % 10 + 0x30);
-			usartTX((input->aluminum) % 10 + 0x30);
-			usartTXs("\n\r");
-			usartTXs("Black\t");
-			usartTX((input->black /10) % 10 + 0x30);
-			usartTX((input->black) % 10 + 0x30);
-			usartTXs("\n\r");
-			usartTXs("Steel\t");
-			usartTX((input->steel /10) % 10 + 0x30);
-			usartTX((input->steel) % 10 + 0x30);
-			usartTXs("\n\r");
-			usartTXs("White\t");
-			usartTX((input->white /10) % 10 + 0x30);
-			usartTX((input->white) % 10 + 0x30);
-			usartTXs("\n\r");
-			usartTXs("Unknown\t");
-			usartTX((input->unknown /10) % 10 + 0x30);
-			usartTX((input->unknown) % 10 + 0x30);
-			usartTXs("\n\r");
-			
-			
-			usartTXs("Total\t");
-			usartTX((input->aluminum /10) % 10 + 0x30);
-			usartTX((input->aluminum) % 10 + 0x30);
-			usartTXs("\n\r");
-			*/
 			display_paused_data(input);
 			PauseFlag = 0;
 			while (PauseFlag == 0)
