@@ -50,7 +50,7 @@ ISR(INT4_vect)
 ISR(INT5_vect)
 {
 	RampDownFlag = 1;
-	tim1tickflag = 0;
+	tim3tickflag = 0;
 }
 
 //Stepper home

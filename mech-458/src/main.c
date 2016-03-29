@@ -172,60 +172,7 @@ int main (void)
 		{
 			storeADC = sort_data (input, storeADC);
 		}
-/*		
-		//Black
-		if (storeADC >= 930 && storeADC <= 1000 && ReflectiveFlag == 0)
-		{
-			insert_data(input, 1);
-			displayVal(storeADC);
-			storeADC = 1023;
-			input->black++;
-			}
-		//White
-		else if (storeADC >= 846 && storeADC <= 929 && ReflectiveFlag == 0)
-		{
-			insert_data(input, 3);
-			displayVal(storeADC);
-			storeADC = 1023;
-			input->white++;
-		}
-		//Aluminum
-		else if (storeADC >= 0 && storeADC <= 375 && ReflectiveFlag == 0)
-		{
-			insert_data(input, 0);
-			displayVal(storeADC);
-			storeADC = 1023;
-			input->aluminum++;
-		}
-		//steel
-		else if (storeADC >= 376 && storeADC <= 845 && ReflectiveFlag == 0)
-		{
-			insert_data(input, 2);
-			displayVal(storeADC);
-			storeADC = 1023;
-			input->steel++;
-		}
-		
-// 		else if (storeADC < 1023 && ReflectiveFlag == 1)
-// 		{
-// 			usartTXs("Undetermined part\n\r");
-// 			
-// 			ones = (storeADC % 10);
-// 			tens = ((storeADC / 10) % 10);
-// 			hundereds = ((storeADC / 100) % 10);
-// 			thousands = ((storeADC / 1000) % 10);
-// 
-// 			usartTX(thousands + 0x30);
-// 			usartTX(hundereds + 0x30);
-// 			usartTX(tens + 0x30);
-// 			usartTX(ones + 0x30);
-// 			usartTX('\n');
-// 			usartTX('\r');
-// 			
-// 			storeADC = 1023;
-// 			input->unknown++;
-// 		}
-*/
+
 	//increment the count to keep track of how many pieces have passed 		
 		
 		if (PauseFlag == 1)
@@ -248,13 +195,23 @@ int main (void)
 			if (ReflectiveFlag == 1)
 			{
 				//restart 10 second timer
-				tim1tickflag = 0;
+				tim3tickflag = 0;
 			}
 			
-			if (tim1tickflag == 20) //got to ten seconds
+			if (tim3tickflag == 50) //got to ten seconds
 			{
 				PORTD |= 0xF0;
 				pwmbrake();
+				RampDownFlag = 0;
+				usartTXs("\n\rParts in the Bin\n\r");
+				usartTXs("Aluminum\t");
+				display_data_value(input->aluminum);
+				usartTXs("Black\t\t");
+				display_data_value(input->black);
+				usartTXs("Steel\t\t");
+				display_data_value(input->steel);
+				usartTXs("White\t\t");
+				display_data_value(input->white);
 			}
 		}
 	}//end while

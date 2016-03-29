@@ -26,6 +26,10 @@ ISR(TIMER3_COMPA_vect)
 {
 	
 	tim3tickflag++;
+	if (tim3tickflag > 100)
+	{
+		tim3tickflag = 2;
+	}
 	/*
 	move = lastpart - nextpart;
 	

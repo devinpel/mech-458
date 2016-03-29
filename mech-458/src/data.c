@@ -153,7 +153,7 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 	uint8_t ones, tens, hundereds, thousands;
 	
 	//Black
-	if (storeADC >= 936 && storeADC <= 1000)
+	if (storeADC >= 760 && storeADC <= 1000)
 	{
 		insert_data(input, 1);
 		displayVal(storeADC);
@@ -161,7 +161,7 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 		input->black++;
 	}
 	//White
-	else if (storeADC >= 840 && storeADC <= 935)
+	else if (storeADC >= 700 && storeADC <= 759)
 	{
 		insert_data(input, 3);
 		displayVal(storeADC);
@@ -177,7 +177,7 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 		input->aluminum++;
 	}
 	//steel
-	else if (storeADC >= 376 && storeADC <= 839)
+	else if (storeADC >= 376 && storeADC <= 699)
 	{
 		insert_data(input, 2);
 		displayVal(storeADC);
@@ -212,48 +212,50 @@ void display_paused_data (struct data *input)
 {
 	uint8_t aluminum = 0, black = 0, white = 0, steel = 0;
 	uint8_t temp;
-	
-	for (temp = input->tail % 16; temp < (input->head % 16); temp++)
-	{
-		if (input->queue[temp] == 0)
+
+	if(input->head != input->tail)
+	{	
+		for (temp = (input->tail % 16) - 1; temp < (input->head % 16); temp++)
 		{
-			aluminum++;
-		}
-		else if (input->queue[temp] == 1)
-		{
-			black ++;
-		}
-		else if (input->queue[temp] == 2)
-		{
-			steel ++;
-		}
-		else if (input->queue[temp] == 4)
-		{
-			white ++;
+			if (input->queue[temp] == 0)
+			{
+				aluminum++;
+			}
+			else if (input->queue[temp] == 1)
+			{
+				black ++;
+			}
+			else if (input->queue[temp] == 2)
+			{
+				steel ++;
+			}
+			else if (input->queue[temp] == 3)
+			{
+				white ++;
+			}
 		}
 	}
-	
 	usartTXs("Parts on the belt\n\r");
 	usartTXs("Aluminum\t");
 	display_data_value(aluminum);
-	usartTXs("Black\t");
+	usartTXs("Black\t\t");
 	display_data_value(black);
-	usartTXs("Steel\t");
+	usartTXs("Steel\t\t");
 	display_data_value(steel);
-	usartTXs("White\t");
+	usartTXs("White\t\t");
 	display_data_value(white);
-	usartTXs("Unsorted\t");
+	usartTXs("Unsorted\t\t");
 	display_data_value(count - input ->head);
 	
 	
 	usartTXs("\n\rParts in the Bin\n\r");
 	usartTXs("Aluminum\t");
 	display_data_value(input->aluminum - aluminum);
-	usartTXs("Black\t");
+	usartTXs("Black\t\t");
 	display_data_value(input->black - black);
-	usartTXs("Steel\t");
+	usartTXs("Steel\t\t");
 	display_data_value(input->steel - steel);
-	usartTXs("White\t");
+	usartTXs("White\t\t");
 	display_data_value(input->white - white);
 	
 }
