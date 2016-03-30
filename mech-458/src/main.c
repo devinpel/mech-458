@@ -96,7 +96,7 @@ int main (void)
 	step = 0;
 	lastpart = 1;
 	nextpart = 1;
-	delaytim3 = 28;
+	delaytim3 = 22;
 	
 	sei();
 	

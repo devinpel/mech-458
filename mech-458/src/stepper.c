@@ -21,7 +21,7 @@ void homestepper(void)
 		}
 		if (tim1tickflag == delaytim3)
 		{
-			casefunc(nextstep);
+			testcwfunc(nextstep);
 		}
 	} 
 	HomeFlag = 0;
@@ -32,8 +32,8 @@ uint8_t movestepper(char nextpart, char lastpart)
 {
 	char move = 0;
 	char nextstep = 0;
-	char delayconst = 26;
-	char accel = 11;
+	char delayconst = 22;
+	char accel = 10;
 	
 // 	usartTX(nextpart+0x30);
 // 	usartTXs("\t");
@@ -41,7 +41,7 @@ uint8_t movestepper(char nextpart, char lastpart)
 // 	usartTXs("\n\r");
 	
 	move = lastpart - nextpart;
-	if (move == 2 || move == -2)
+	if (move == 2 || move == -2)	//ccw
 	{
 		if (step < 20)
 		{
@@ -69,7 +69,8 @@ uint8_t movestepper(char nextpart, char lastpart)
 		}
 		if (step <= 100)
 		{
-			casefunc(nextstep);
+			//casefunc(nextstep);
+			testcwfunc(nextstep);
 			step++;
 		}
 		if (step >= 100)
@@ -104,19 +105,20 @@ uint8_t movestepper(char nextpart, char lastpart)
 		{
 			nextstep = 3;
 		}
-		if (step <= 50)
+		if (step <= 54)
 		{
-			casefunc(nextstep);
+			//casefunc(nextstep);
+			testcwfunc(nextstep);
 			step++;
 		}
-		if (step >= 50)
+		if (step >= 54)
 		{
 			step = 0;
 			lastpart = nextpart;
 		}
 	}
 		
-	else if (move == 1 || move == -3)
+	else if (move == 1 || move == -3)	//ccw
 	{
 		if (step < 20)
 		{
@@ -142,7 +144,8 @@ uint8_t movestepper(char nextpart, char lastpart)
 		}
 		if (step <= 50)
 		{
-			casefunc(nextstep);
+			//casefunc(nextstep);
+			testcwfunc(nextstep);
 			step++;
 		}	
 		if (step >= 50)
@@ -178,6 +181,65 @@ void casefunc(uint8_t nextstep)
 		
 		case 3:
 		PORTA = 0b00101000;		//step 4
+		curstep = 3;
+		tim1tickflag = 0;
+		break;
+	}
+}
+
+void testccwfunc(uint8_t nextstep)
+{
+	switch (nextstep)
+	{
+		case 0:
+		PORTA = 0b00101011;		//step 1
+		curstep = 0;
+		tim1tickflag = 0;
+		break;
+		
+		case 1:
+		PORTA = 0b00011011;		//step 2
+		curstep = 1;
+		tim1tickflag = 0;
+		break;
+		
+		case 2:
+		PORTA = 0b00011101;		//step 3
+		curstep = 2;
+		tim1tickflag = 0;
+		break;
+		
+		case 3:
+		PORTA = 0b00101101;		//step 4
+		curstep = 3;
+		tim1tickflag = 0;
+		break;
+	}
+}
+void testcwfunc(uint8_t nextstep)
+{
+	switch (nextstep)
+	{
+		case 0:
+		PORTA = 0b00011011;		//step 1 motor one+
+		curstep = 0;
+		tim1tickflag = 0;
+		break;
+		
+		case 1:
+		PORTA = 0b00011101;		//step 2 motor two+
+		curstep = 1;
+		tim1tickflag = 0;
+		break;
+		
+		case 2:
+		PORTA = 0b00101101;		//step 3 motor one-
+		curstep = 2;
+		tim1tickflag = 0;
+		break;
+		
+		case 3:
+		PORTA = 0b00101011;		//step 4 motor two-
 		curstep = 3;
 		tim1tickflag = 0;
 		break;

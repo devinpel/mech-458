@@ -153,7 +153,7 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 	uint8_t ones, tens, hundereds, thousands;
 	
 	//Black
-	if (storeADC >= 760 && storeADC <= 1000)
+	if (storeADC >= 853 && storeADC <= 1000)
 	{
 		insert_data(input, 1);
 		displayVal(storeADC);
@@ -161,7 +161,7 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 		input->black++;
 	}
 	//White
-	else if (storeADC >= 700 && storeADC <= 759)
+	else if (storeADC >= 700 && storeADC <= 852)
 	{
 		insert_data(input, 3);
 		displayVal(storeADC);
