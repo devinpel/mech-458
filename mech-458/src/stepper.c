@@ -32,8 +32,8 @@ uint8_t movestepper(char nextpart, char lastpart)
 {
 	char move = 0;
 	char nextstep = 0;
-	char delayconst = 22;
-	char accel = 10;
+	char delayconst = 21;
+	char accel = 8;
 	
 // 	usartTX(nextpart+0x30);
 // 	usartTXs("\t");
@@ -46,14 +46,17 @@ uint8_t movestepper(char nextpart, char lastpart)
 		if (step < 20)
 		{
 			delaytim3--;
+			delaytim3--;
+			
 			if (delaytim3 < accel)
 			{
 				delaytim3 = accel;
 			}
 		}
-		if (step > 80)
+		if (step > 86)
 		{
 			//delaytim3 = delaytim3 + (delaytim3 / 10);
+			delaytim3++;
 			delaytim3++;
 			if (delaytim3 > delayconst)
 			{
@@ -86,15 +89,17 @@ uint8_t movestepper(char nextpart, char lastpart)
 		{
 			//delaytim3 = delaytim3 - (delaytim3 / 10);
 			delaytim3--;
+			delaytim3--;
 			if (delaytim3 < accel)
 			{
 				delaytim3 = accel;
 			}
 		}
-		if (step > 34)
+		if (step > 36)
 		{
 			//delaytim3 = delaytim3 + (delaytim3 / 10);
-			delaytim3--;
+			delaytim3++;
+			delaytim3++;
 			if (delaytim3 > delayconst)
 			{
 				delaytim3 = delayconst;
@@ -122,15 +127,18 @@ uint8_t movestepper(char nextpart, char lastpart)
 	{
 		if (step < 20)
 		{
-			delaytim3 = delaytim3 - (delaytim3 / 10);
+			//delaytim3 = delaytim3 - (delaytim3 / 10);
+			delaytim3--;
+			delaytim3--;
 			if (delaytim3 < accel)
 			{
 				delaytim3 = accel;
 			}
 		}
-		if (step > 34)
+		if (step > 36)
 		{
 			//delaytim3 = delaytim3 + (delaytim3 / 10);
+			delaytim3++;
 			delaytim3++;
 			if (delaytim3 > delayconst)
 			{
@@ -144,8 +152,8 @@ uint8_t movestepper(char nextpart, char lastpart)
 		}
 		if (step <= 50)
 		{
-			//casefunc(nextstep);
 			testcwfunc(nextstep);
+			//testcwfunc(nextstep);
 			step++;
 		}	
 		if (step >= 50)
@@ -245,3 +253,5 @@ void testcwfunc(uint8_t nextstep)
 		break;
 	}
 }
+
+

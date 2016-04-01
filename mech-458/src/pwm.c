@@ -17,7 +17,7 @@ void pwminit (void)
 	TCCR0B = 0b00000010;
 	
 	//OCR0A set to top for 8-bit timer
-	OCR0A = 0x38;
+	OCR0A = 0x4F;
 		
 	//7-3 reserved, 2 for time B or some shit, 1 set to one to enable timer/counter0 interupts, incorrect -> 0 pretty sure this should be set to zero???? (should eb set as one to enable flag)
 	//TIMSK0 = 0b00000010;	
