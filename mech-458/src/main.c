@@ -141,7 +141,7 @@ int main (void)
 		else if (EndofBeltFlag == 1 && lastpart == nextpart)
 		{
 			input->datapulled = 0;
-			pwmcw();
+			PORTE = 0x02;
 			EndofBeltFlag = 0;
 			tim3tickflag = 0;
 			//while (tim3tickflag <= 2);

@@ -24,12 +24,8 @@ void interruptInit (void)
 //End of belt sensor
 ISR(INT0_vect)
 {
-	if (EndofBeltFlag = 0)
-	{
-		pwmbrake();
-	}
+	PORTE = 0x00;
 	EndofBeltFlag = 1;
-	
 }
 
 //Start of belt sensor
