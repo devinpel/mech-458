@@ -110,7 +110,7 @@ uint8_t movestepper(char nextpart, char lastpart)
 		{
 			nextstep = 3;
 		}
-		if (step <= 54)
+		if (step <= 50)
 		{
 			//casefunc(nextstep);
 			testcwfunc(nextstep);

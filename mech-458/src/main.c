@@ -131,7 +131,7 @@ int main (void)
 			nextpart = pop_data(input);
 		}
 		
-		else if (lastpart != nextpart)
+		else if (lastpart != nextpart && EndofBeltFlag == 1)
 		{
 			if (tim1tickflag == delaytim3 && tim3tickflag >= 2)
 			{
