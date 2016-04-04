@@ -177,40 +177,28 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 		input->aluminum++;
 	}
 	//steel
-	else if (storeADC >= 46 && storeADC <= 699)
+	else if (storeADC >= 46 && storeADC <= 599)
 	{
 		insert_data(input, 2);
 		displayVal(storeADC);
 		storeADC = 1023;
 		input->steel++;
 	}
+	//Unknown
+	else if (storeADC >= 600 && storeADC <= 699)
+	{
+		insert_data(input, 5);
+		displayVal(storeADC);
+		storeADC = 1023;
+		input->steel++;
+	}
 
-// 	else if (storeADC < 1023)
-// 	{
-// 		usartTXs("Undetermined part\n\r");
-// 	
-// 		ones = (storeADC % 10);
-// 		tens = ((storeADC / 10) % 10);
-// 		hundereds = ((storeADC / 100) % 10);
-// 		thousands = ((storeADC / 1000) % 10);
-// 
-// 		usartTX(thousands + 0x30);
-// 		usartTX(hundereds + 0x30);
-// 		usartTX(tens + 0x30);
-// 		usartTX(ones + 0x30);
-// 		usartTX('\n');
-// 		usartTX('\r');
-// 	
-// 		storeADC = 1023;
-// 		input->unknown++;
-// 	}	
-	
 	return storeADC;
 }
 
 void display_paused_data (struct data *input)
 {
-	uint8_t aluminum = 0, black = 0, white = 0, steel = 0;
+	uint8_t aluminum = 0, black = 0, white = 0, steel = 0, unknown = 0;
 	uint8_t temp;
 
 	if(input->head != input->tail)
@@ -233,6 +221,10 @@ void display_paused_data (struct data *input)
 			{
 				white ++;
 			}
+			else if (input->queue[temp] == 5)
+			{
+				unknown ++;
+			}			
 		}
 	}
 	usartTXs("Parts on the belt\n\r");
@@ -244,6 +236,8 @@ void display_paused_data (struct data *input)
 	display_data_value(steel);
 	usartTXs("White\t\t");
 	display_data_value(white);
+	usartTXs("Unknown\t\t");
+	display_data_value(unknown);
 	usartTXs("Unsorted\t\t");
 	display_data_value(count - input ->head);
 	
@@ -257,5 +251,7 @@ void display_paused_data (struct data *input)
 	display_data_value(input->steel - steel);
 	usartTXs("White\t\t");
 	display_data_value(input->white - white);
+	usartTXs("Unknown\t\t");
+	display_data_value(input->unknown - unknown);
 	
 }
