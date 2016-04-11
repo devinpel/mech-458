@@ -92,6 +92,7 @@ int main (void)
 	tim3tickflag = 0;
 	curstep = 0;
 	stored = 0;
+	count = 0;
 	
 	step = 0;
 	lastpart = 1;
@@ -135,7 +136,7 @@ int main (void)
 		{
 			if (tim1tickflag == delaytim3 && tim3tickflag >= 2)
 			{
-				lastpart = movestepper(nextpart, lastpart);
+				lastpart = movestepper(input, nextpart, lastpart);
 			}
 		}
 		else if (EndofBeltFlag == 1 && lastpart == nextpart)
@@ -212,6 +213,7 @@ int main (void)
 				display_data_value(input->steel);
 				usartTXs("White\t\t");
 				display_data_value(input->white);
+				while(1);
 			}
 		}
 	}//end while

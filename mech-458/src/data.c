@@ -153,7 +153,7 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 	uint8_t ones, tens, hundereds, thousands;
 	
 	//Black
-	if (storeADC >= 878 && storeADC <= 1000)
+	if (storeADC >= 860 && storeADC <= 1000)
 	{
 		insert_data(input, 1);
 		displayVal(storeADC);
@@ -161,7 +161,7 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 		input->black++;
 	}
 	//White
-	else if (storeADC >= 700 && storeADC <= 877)
+	else if (storeADC >= 750 && storeADC <= 859)
 	{
 		insert_data(input, 3);
 		displayVal(storeADC);
@@ -169,15 +169,15 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 		input->white++;
 	}
 	//Aluminum
-	else if (storeADC >= 0 && storeADC <= 45)
+	else if (storeADC >= 0 && storeADC <= 46)
 	{
 		insert_data(input, 0);
 		displayVal(storeADC);
 		storeADC = 1023;
 		input->aluminum++;
 	}
-	//steel
-	else if (storeADC >= 46 && storeADC <= 599)
+// 	//steel
+	else if (storeADC >= 47 && storeADC <= 299)
 	{
 		insert_data(input, 2);
 		displayVal(storeADC);
@@ -185,12 +185,12 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 		input->steel++;
 	}
 	//Unknown
-	else if (storeADC >= 600 && storeADC <= 699)
+	else if (storeADC >= 300 && storeADC <= 749)
 	{
 		insert_data(input, 5);
 		displayVal(storeADC);
 		storeADC = 1023;
-		input->steel++;
+		input->unknown++;
 	}
 
 	return storeADC;
@@ -201,7 +201,7 @@ void display_paused_data (struct data *input)
 	uint8_t aluminum = 0, black = 0, white = 0, steel = 0, unknown = 0;
 	uint8_t temp;
 
-	if(input->head != input->tail)
+	if(input->head >= (input->tail) && input->datapulled == 1)
 	{	
 		for (temp = (input->tail % 16) - 1; temp < (input->head % 16); temp++)
 		{
@@ -238,8 +238,12 @@ void display_paused_data (struct data *input)
 	display_data_value(white);
 	usartTXs("Unknown\t\t");
 	display_data_value(unknown);
-	usartTXs("Unsorted\t\t");
-	display_data_value(count - input ->head);
+// 	usartTXs("Unsorted\t\t");
+// 	display_data_value(count - input->head);
+// 	usartTXs("count is\t\t");
+// 	display_data_value(count);
+// 	usartTXs("head is\t\t");
+// 	display_data_value(input->head);
 	
 	
 	usartTXs("\n\rParts in the Bin\n\r");

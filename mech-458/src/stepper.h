@@ -11,10 +11,14 @@
 
 #include <asf.h>
 #include "usart.h"
+#include "tim3.h"
+#include "data.h"
+#include <util/delay_basic.h>
+#include <stdio.h>
 
 void stepperinit(void);
 void casefunc(uint8_t nextstep);
-uint8_t movestepper(char nextpart, char lastpart);
+uint8_t movestepper(struct data *input, char nextpart, char lastpart);
 void homestepper(void);
 void testcwfunc(uint8_t nextstep);
 void testccwfunc(uint8_t nextstep);

@@ -1,7 +1,5 @@
 #include "stepper.h"
-#include "tim3.h"
-#include <util/delay_basic.h>
-#include <stdio.h>
+
 
 
 void stepperinit(void)
@@ -28,20 +26,24 @@ void homestepper(void)
 	EIMSK &= ~(_BV(INT6));
 }
 
-uint8_t movestepper(char nextpart, char lastpart)
+uint8_t movestepper(struct data *input, char nextpart, char lastpart)
 {
 	char move = 0;
 	char nextstep = 0;
-	char delayconst = 21;
-	char accel = 5;
+	char delayconst = 20;
+	char accel = 6;
 	
-// 	usartTX(nextpart+0x30);
-// 	usartTXs("\t");
-// 	usartTX(lastpart+0x30);
-// 	usartTXs("\n\r");
+	move = lastpart - nextpart;	
 	
-	move = lastpart - nextpart;
-	if (move == 2 || move == -2)	//ccw
+	if(nextpart == 5)
+	{
+		PORTE = 0x02;
+		EndofBeltFlag = 0;
+		tim3tickflag = 0;
+		tim1tickflag = 0;
+		input->datapulled = 0;
+	}
+	else if (move == 2 || move == -2)	//ccw
 	{
 		if (step < 20)
 		{
