@@ -20,9 +20,7 @@ void stepperinit(void);
 void casefunc(uint8_t nextstep);
 uint8_t movestepper(struct data *input, char nextpart, char lastpart);
 void homestepper(void);
-void testcwfunc(uint8_t nextstep);
-void testccwfunc(uint8_t nextstep);
-
+void nextstepmove(uint8_t nextstep);
 
 extern volatile unsigned char step;
 extern volatile unsigned char HomeFlag;
