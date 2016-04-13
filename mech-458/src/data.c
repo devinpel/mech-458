@@ -13,6 +13,10 @@
 #include "data.h"
 #include "usart.h"
 
+// This function will load part data into the circular array
+// Using the modulus in the array index allows for the values
+// in the array to be over written as more and more parts 
+// come through.
 void insert_data (struct data *input, uint8_t val)
 {
 	input->queue[input->head % 16] = val;
@@ -21,6 +25,11 @@ void insert_data (struct data *input, uint8_t val)
 	input->head = input->head + 1;
 }
 
+// This function removes parts from the array after they are
+// dropped in the bin. If the tail pointer is ever larger then the
+// head pointer then something has gone wrong somewhere.
+//
+// The modulus is used again in the array index to loop the array.
 uint8_t pop_data (struct data *input)
 {
 	uint8_t temp;
@@ -34,12 +43,14 @@ uint8_t pop_data (struct data *input)
 	input->datapulled = 1;
 	temp = input->queue[input->tail % 16];
 	input->tail = input->tail + 1;
-//	usartTXs("tail = ");
-//	usartTX(input->tail + 0x30);
-//	usartTXs("\n\r");
+	
 	return temp;
 }
 
+// This function can display a 10bit ADC result value in the data struct
+// on the serial console.
+// 
+// This is primarily for debugging purposes.
 void display_data (struct data *input)
 {
 	uint8_t i,ones, tens, hundereds, thousands;
@@ -66,6 +77,7 @@ void display_data (struct data *input)
 	}
 }
 
+//This function displays an 8bit value on the serial port
 void display_data_value (uint8_t val)
 {
 	usartTX((val /10) % 10 + 0x30);
@@ -73,6 +85,8 @@ void display_data_value (uint8_t val)
 	usartTXs("\n\r");
 }
 
+// This function clears the data que and resets all counters to 0
+// To be called on initialization.
 void clearQueue (struct data *input)
 {
 	uint8_t i;
@@ -92,6 +106,9 @@ void clearQueue (struct data *input)
 	}
 }
 
+// This function can display any 10bit ADC result on the serial console.
+//
+// This is primarily for debugging purposes.
 void displayVal (uint16_t storeADC)
 {
 	uint8_t ones, tens, hundereds, thousands;	
@@ -109,6 +126,11 @@ void displayVal (uint16_t storeADC)
 	usartTX('\r');
 }
 
+// Calibration mode. 
+// This mode streams ADC result values out the serial port as a part
+// moves passed the reflective sensor.
+//
+// To exit this mode restart the uC
 void calibration (void)
 {
 
@@ -148,6 +170,10 @@ void calibration (void)
 	}
 }
 
+// Assign a numarical value to a part based on it's minimum ADC value.
+//
+// Pass this function the data struct to store the value and the ADC 
+// sensor value. 
 uint16_t sort_data (struct data *input, uint16_t storeADC)
 {
 	uint8_t ones, tens, hundereds, thousands;
@@ -196,6 +222,8 @@ uint16_t sort_data (struct data *input, uint16_t storeADC)
 	return storeADC;
 }
 
+// Once the pause button is hit, sum up all the know parts in the bin
+// and on the belt and display it over the serial port.
 void display_paused_data (struct data *input)
 {
 	uint8_t aluminum = 0, black = 0, white = 0, steel = 0, unknown = 0;

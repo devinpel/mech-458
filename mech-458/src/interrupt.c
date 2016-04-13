@@ -59,6 +59,7 @@ ISR(INT6_vect)
 	HomeFlag = 1;
 }
 
+//Buttont to go into calibration mode.
 ISR(INT7_vect)
 {
 	calibrationFlag = 1;

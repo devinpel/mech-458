@@ -19,14 +19,18 @@ void usartInit (uint16_t baud)
 	//UCSR1B |= RxEn;		//Enable RX mode for USART1
 	UCSR1C |= Mode8Bit;		//Set Usart to 8 bit data mode
 }
-
+//This function displace one char at a time on the serial port
+//
+//Pass this function a char.
 void usartTX (unsigned char data)
 {
 	while (!(UCSR1A & TxBuffRdy));	//Wait for the TX buffer to be ready for data
 	
 	UDR1 = data;
 }
-
+//This function can display strings on the serial port by calling the display char
+//function.
+//Pass this function a string.
 void usartTXs (const char *string)
 {
 	uint8_t c = 0;

@@ -54,14 +54,13 @@ volatile unsigned char step;
 volatile unsigned char delaytim3;
 volatile unsigned char steppermove;
 
-//volatile unsigned char lastpart;
-//volatile unsigned char nextpart;
 
 
 int main (void)
 {
 	// Insert system clock initialization code here (sysclk_init()).
 
+	//Variable definitions
 	board_init();
 	uint8_t ones, tens, hundereds, thousands;
 	uint16_t storeADC = 1023;
@@ -70,9 +69,11 @@ int main (void)
 	char lastpart;
 	char nextpart;
 	char stored;
-		
+	
+	//Data struct creation	
 	input = &in;
 	
+	//Initialization
 	cli();
 	adcinit();
 	pwminit(); 
@@ -105,33 +106,34 @@ int main (void)
 	PORTD |= 0b10100000; /* initialize port to high – turn on LEDs */
 	DDRC = 0b11111111; /* Sets all pins on Port C to output */	
 	
+	//Start first ADC conversion
 	ADCSRA |= ADCStart;
 
+	//set all values in the data struct to zero.
 	clearQueue(input);
 	
 	usartTXs("Serial port initialized\n\r");
 	usartTXs("-------------------------\n\r");	
 	
-	homestepper();
-	pwmcw();
+	homestepper();	//Move stepper to home position
+	pwmcw();		//Turn on belt
 	
 	EndofBeltFlag = 0;
 	
+	//Enter calibration mode if butten is pressed on startup
 	if (calibrationFlag == 1)
 	{
 		calibration();
 	}
-	
 			
 	while(1)
 	{
-		
-		//case
+		//Determine if there is a new part in the que. If there is get it.
 		if ((input->datapulled == 0) && (input->head != input->tail))
 		{
 			nextpart = pop_data(input);
 		}
-		
+		//Move stepper based on the next part to go into the bin
 		else if (lastpart != nextpart && EndofBeltFlag == 1)
 		{
 			if (tim1tickflag == delaytim3 && tim3tickflag >= 2)
@@ -139,19 +141,22 @@ int main (void)
 				lastpart = movestepper(input, nextpart, lastpart);
 			}
 		}
+		//Wait for bit to be in the right spot before moving part to the bin
 		else if (EndofBeltFlag == 1 && lastpart == nextpart)
 		{
 			input->datapulled = 0;
 			PORTE = 0x02;
 			EndofBeltFlag = 0;
 			tim3tickflag = 0;
-			//while (tim3tickflag <= 2);
 			tim1tickflag = 0;
 		}
 		
 		//case
+		//Check to see if there's a part infront of the reflective sensor. This
+		//is controlled by an interrupt
 		if (ReflectiveFlag == 1)
 		{	
+			//ADC conversion complete
 			if(ADC_result_flag == 1)
 			{
 				//Look for the min value from ADC as a part moves past the sensor
@@ -160,22 +165,18 @@ int main (void)
 					storeADC = ADC_result;
 					
 				}
-				//Once the min value has been found, sort it and store into array.
-// 				else
-// 				{
-// 					
-// 				}
 				ADC_result_flag = 0;
-				ADCSRA |= ADCStart;				
+				ADCSRA |= ADCStart;		//Start next conversion		
 			}
 		}
+		//Once min value is found, use that value to identify the part and have the 
+		//part stored in the array.
 		if (storeADC < 1023 && ReflectiveFlag == 0)
 		{
 			storeADC = sort_data (input, storeADC);
-		}
-
-	//increment the count to keep track of how many pieces have passed 		
-		
+		}	
+		//If the user pushes the pause button, stop the belt and display all known parts and
+		//there location
 		if (PauseFlag == 1)
 		{
 			display_paused_data(input);
@@ -187,12 +188,10 @@ int main (void)
 			pwmcw();
 			PauseFlag = 0;
 		}
-		
+		//Rampdown, check for any new parts on the belt, sort all remaining parts.
+		//Everything a new part is seen, timer to shut down is reset.
 		if (RampDownFlag == 1)
-		{
-			//start 10 second timer
-			//tim1tickflag = 0;
-			
+		{			
 			if (ReflectiveFlag == 1)
 			{
 				//restart 10 second timer
